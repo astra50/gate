@@ -16,8 +16,9 @@ services:
             - ./etc/php.ini:/usr/local/etc/php/php.ini
             - ./etc/php-fpm.conf:/usr/local/etc/php-fpm.d/default.conf
         environment:
-            APP_ENV: prod
-            APP_DEBUG: 0
+            APP_ENV: dev
+            APP_DEBUG: 1
+            PHP_OPCACHE_ENABLE: 0
 
     postgres:
         image: postgres:12.2
