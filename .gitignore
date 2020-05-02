@@ -25,3 +25,6 @@
 /.php_cs.cache
 ###< friendsofphp/php-cs-fixer ###
 /.idea/
+/node_modules/
+/public/manifest.json
+/public/assets/
