@@ -1,0 +1,39 @@
+hwi_oauth:
+    # list of names of the firewalls in which this bundle is active, this setting MUST be set
+    firewall_names: [main]
+
+    # https://github.com/hwi/HWIOAuthBundle/blob/master/Resources/doc/2-configuring_resource_owners.md
+    resource_owners:
+        yandex:
+            type:                yandex
+            client_id:           '%env(YANDEX_ID)%'
+            client_secret:       '%env(YANDEX_SECRET)%'
+            options:
+                csrf: true
+        vkontakte:
+            type:                vkontakte
+            client_id:           '%env(VKONTAKTE_ID)%'
+            client_secret:       '%env(VKONTAKTE_SECRET)%'
+            options:
+                csrf: true
+    http:
+        client: httplug.oauth.client
+        message_factory: httplug.oauth.client
+
+framework:
+    http_client:
+        scoped_clients:
+            http_oauth_client:
+                scope: oauth
+                max_redirects: 5
+
+services:
+    _defaults:
+        public: false
+        autowire: true
+        autoconfigure: true
+
+    httplug.oauth.client:
+        class: Symfony\Component\HttpClient\HttplugClient
+        arguments:
+            - '@http_oauth_client'

@@ -1,0 +1,7 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Method App\\\\Infrastructure\\\\ManagerRegistry\\:\\:repository\\(\\) should return Doctrine\\\\ORM\\\\EntityRepository\\<T\\> but returns Doctrine\\\\Persistence\\\\ObjectRepository\\<T\\>\\.$#"
+			count: 1
+			path: src/Infrastructure/ManagerRegistry.php
+
