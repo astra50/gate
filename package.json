@@ -16,7 +16,7 @@
     "url": "git+https://github.com/astra50/gate.git"
   },
   "author": "Sidorov Kirill",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/astra50/gate/issues"
   },
