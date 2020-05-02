@@ -173,8 +173,8 @@ steps:
         image: alpine/git:1.0.7
         commands:
             - \[ "${DRONE_COMMIT_SHA}" == "$$(git ls-remote origin ${DRONE_COMMIT_BRANCH} | awk '{ print $1}')" ] || exit 78
-        when:
-            branch: [ master ]
+#        when:
+#            branch: [ master ]
         depends_on:
             - build prod
             - phpunit
@@ -192,8 +192,6 @@ steps:
             - docker-compose --file docker-compose.prod.yml config | docker stack deploy --prune --with-registry-auth --compose-file - gate
         environment:
             VERSION: ${DRONE_BUILD_NUMBER}
-        when:
-            branch: [ master ]
         depends_on:
             - check deploy
 
