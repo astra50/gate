@@ -4,15 +4,16 @@ hwi_oauth:
 
     # https://github.com/hwi/HWIOAuthBundle/blob/master/Resources/doc/2-configuring_resource_owners.md
     resource_owners:
-        google:
-            type:                google
-            client_id:           '%env(GL_ID)%'
-            client_secret:       '%env(GL_SECRET)%'
-            scope:               "email profile"
+        yandex:
+            type:                yandex
+            client_id:           '%env(YANDEX_ID)%'
+            client_secret:       '%env(YANDEX_SECRET)%'
+            options:
+                csrf: true
         vkontakte:
             type:                vkontakte
-            client_id:           '%env(VK_ID)%'
-            client_secret:       '%env(VK_SECRET)%'
+            client_id:           '%env(VKONTAKTE_ID)%'
+            client_secret:       '%env(VKONTAKTE_SECRET)%'
             options:
                 csrf: true
     http:

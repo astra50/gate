@@ -1,7 +1,8 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        users_in_memory: { memory: null }
+        entity:
+            id: App\Infrastructure\DoctrineUserProvider
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -10,13 +11,13 @@ security:
             anonymous: ~
             oauth:
                 resource_owners:
-                    vkontakte: /login/check-vkontakte
-                    google: /login/check-google
+                    vkontakte: /connect/service/vkontakte
+                    yandex: /connect/service/yandex
                 login_path: /login
                 use_forward: false
                 failure_path: /login
                 oauth_user_provider:
-                    service: hwi_oauth.user.provider
+                    service: App\Infrastructure\DoctrineUserProvider
 
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
