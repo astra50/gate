@@ -63,6 +63,7 @@ steps:
         commands:
             - composer install --no-interaction --no-progress --classmap-authoritative
             - composer dump-env test
+            - bin/console cache:warmup
         depends_on:
             - build base
 

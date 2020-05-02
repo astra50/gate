@@ -72,6 +72,7 @@ COPY .env* .
 
 RUN set -ex \
     && composer install --no-interaction --no-progress --no-dev --classmap-authoritative \
+    && console cache:warmup \
     && chown -R www-data:www-data ${APP_DIR}/var
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s \
