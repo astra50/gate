@@ -19,11 +19,13 @@
     <link rel="icon" type="img/png" href="img/favicons/favicon-32x32.png" sizes="32x32"/>
     <link rel="apple-touch-icon" href="img/favicons/apple-touch-icon-152x152.png" sizes="152x152"/>
     <!-- Styles ================================================================================== -->
-    <link rel="stylesheet" href="css/main.min.css"/><!-- Main styles from .less -->
-    <!--link rel="stylesheet" href="css/modify.css"/--><!-- Fast dev additions -->
+    <<link rel="stylesheet" href="{{ asset('styles.css') }}"/><!-- Main styles from .less -->
+    <link rel="stylesheet" href="{{ asset('main.css') }}"/>
 </head>
 <body>
     {% block body %}
     {% endblock body %}
+    <script src="{{ asset('vendors.js') }}"></script>
+    <script src="{{ asset('main.js') }}"></script>
 </body>
 </html>
