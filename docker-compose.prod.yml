@@ -1,0 +1,110 @@
+version: '3.7'
+
+services:
+    nginx:
+        image: astra50/gate-nginx:${VERSION}
+        networks:
+            - astra50gate
+            - ingress
+        deploy:
+            mode: replicated
+            replicas: 1
+            endpoint_mode: dnsrr
+            restart_policy:
+                condition: on-failure
+            update_config:
+                parallelism: 1
+                delay: 10s
+                order: start-first
+            labels:
+                - "traefik.docker.network=proxy"
+                - "traefik.enable=true"
+                - "traefik.frontend.rule=Host:gate.astra50.ru"
+                - "traefik.port=80"
+                - "traefik.protocol=http"
+                - "traefik.backend.loadbalancer.method=drr"
+
+    php-fpm: &app
+        image: astra50/gate-fpm:${VERSION}
+        networks:
+            - astra50gate
+        volumes:
+          - /etc/astra50/gate_env:/usr/local/app/.env:ro
+        secrets:
+            - database_password
+        stop_grace_period: 120s
+        deploy:
+            mode: replicated
+            replicas: 1
+            endpoint_mode: dnsrr
+            restart_policy:
+                condition: on-failure
+            update_config:
+                parallelism: 1
+                delay: 10s
+                order: start-first
+
+    migration:
+        <<: *app
+        command: wait-for-it.sh postgres:5432 -- console doctrine:migrations:migrate --no-interaction --allow-no-migration
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+                condition: none
+            labels:
+                - "traefik.enable=false"
+
+    postgres:
+        image: postgres:12.2
+        volumes:
+            -   type: bind
+                source: /opt/astra50/db/gate
+                target: /var/lib/postgresql/data
+            -   type: bind
+                source: /opt/am/db/backups
+                target: /backups
+        environment:
+            POSTGRES_DB: db
+            POSTGRES_USER: db
+            POSTGRES_PASSWORD_FILE: /run/secrets/database_password
+        networks:
+            - astra50gate
+        secrets:
+            - database_password
+        deploy:
+            mode: global
+            update_config:
+                failure_action: rollback
+                parallelism: 1
+                delay: 5s
+        healthcheck:
+            test: pg_isready
+            interval: 5s
+            timeout: 5s
+            retries: 3
+            start_period: 10s
+
+    memcached:
+        image: memcached:1.6.5-alpine
+        networks:
+            - astra50gate
+        healthcheck:
+            test: nc -z 127.0.0.1 11211
+            interval: 5s
+            timeout: 5s
+            retries: 3
+            start_period: 5s
+
+networks:
+    ingress:
+        external: true
+        name: proxy
+    astra50gate:
+        driver: overlay
+        name: astra50gate
+
+secrets:
+    database_password:
+        external: true
+        name: astra50gate_database_password

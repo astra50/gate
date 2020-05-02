@@ -1,0 +1,16 @@
+# git
+.git
+
+# Symfony
+var
+public/check.php
+/.env.local
+/.env.local.php
+/.env.*.local
+
+# Composer
+vendor
+
+# Docker
+docker-compose.*
+Dockerfile

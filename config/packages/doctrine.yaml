@@ -1,0 +1,26 @@
+doctrine:
+    dbal:
+        driver:   pdo_pgsql
+        charset:  UTF8
+        server_version: 12.2
+        host:     postgres
+        port:     5432
+        dbname:   db
+        user:     db
+        password: "%env(DATABASE_PASSWORD)%"
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+        mappings:
+            App:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Domain'
+                prefix: 'App\Domain'
+                alias: App
+
+parameters:
+    env(DATABASE_PASSWORD): '%env(default:default_db_password:trim:file:DATABASE_PASSWORD_FILE)%'
+    env(DATABASE_PASSWORD_FILE): /run/secrets/database_password
+    default_db_password: db

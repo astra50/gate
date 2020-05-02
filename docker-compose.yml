@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+    nginx:
+        image: astra50/gate-nginx:base
+        labels:
+            ru.grachevko.dhu: 'gate.astra50.local:2'
+        volumes:
+            - ./public:/usr/local/app/public
+            - ./etc/nginx.conf:/etc/nginx/nginx.conf
+
+    php-fpm:
+        image: astra50/gate-fpm:base
+        volumes:
+            - ./:/usr/local/app
+            - ./etc/php.ini:/usr/local/etc/php/php.ini
+            - ./etc/php-fpm.conf:/usr/local/etc/php-fpm.d/default.conf
+        environment:
+            APP_ENV: prod
+            APP_DEBUG: 0
+
+    postgres:
+        image: postgres:12.2
+        labels:
+            ru.grachevko.dhu: 'db.gate.astra50.local'
+        volumes:
+            -   type: tmpfs
+                target: /var/lib/postgresql/data
+                tmpfs:
+                    size: 2G
+            - ./:/usr/local/app
+        environment:
+            POSTGRES_DB: db
+            POSTGRES_USER: db
+            POSTGRES_PASSWORD: db
+        healthcheck:
+            test: pg_isready -U db
+            interval: 5s
+            timeout: 5s
+            retries: 3
+            start_period: 10s
+
+    memcached:
+        image: memcached:1.6.5-alpine

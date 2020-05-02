@@ -1,0 +1,213 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+clone:
+    depth: 1
+
+steps:
+    -   name: build base
+        image: docker:19.03.6
+        volumes:
+            -   name: docker.sock
+                path: /var/run/docker.sock
+        commands:
+            - docker build -t "astra50/gate-fpm:base" --progress=plain --target php-fpm-base .
+            - docker build -t "astra50/gate-nginx:base" --progress=plain --target nginx-base .
+        environment:
+            DOCKER_BUILDKIT: '1'
+
+    -   name: build prod
+        image: docker:19.03.6
+        volumes:
+            -   name: docker.sock
+                path: /var/run/docker.sock
+        commands:
+            - >-
+                docker build -t "astra50/gate-fpm:${DRONE_BUILD_NUMBER}"
+                --progress=plain
+                --target php-fpm
+                .
+            - >-
+                docker build -t "astra50/gate-nginx:${DRONE_BUILD_NUMBER}"
+                --progress=plain
+                --target nginx
+                .
+        environment:
+            DOCKER_BUILDKIT: '1'
+        depends_on:
+            - build base
+
+    -   name: push base
+        image: docker:19.03.6
+        volumes:
+            -   name: docker.sock
+                path: /var/run/docker.sock
+        commands:
+            - docker login --username "$USERNAME" --password "$PASSWORD"
+            - docker push astra50/gate-fpm:base
+            - docker push astra50/gate-nginx:base
+        environment:
+            USERNAME:
+                from_secret: HUB_USER
+            PASSWORD:
+                from_secret: HUB_TOKEN
+        when:
+            branch: [ master ]
+        depends_on:
+            - build base
+
+    -   name: install
+        image: astra50/gate-fpm:base
+        commands:
+            - composer install --no-interaction --no-progress --classmap-authoritative
+            - composer dump-env test
+        depends_on:
+            - build base
+
+    -   name: php-cs-fixer
+        image: astra50/gate-fpm:base
+        commands:
+            - vendor/bin/php-cs-fixer fix --dry-run --diff-format udiff --using-cache=no
+        when:
+            branch:
+                exclude: [ master ]
+        depends_on:
+            - install
+
+    -   name: blank end line
+        image: astra50/gate-fpm:base
+        commands:
+            - >-
+                find .
+                -not -path "./.git/*"
+                -not -path "./public/*"
+                -not -path "./.idea/*"
+                -not -path "./var/*"
+                -not -path "./vendor/*"
+                -type f -exec grep -Iq . {} \; -and -print0
+                | xargs -0 -L1 bash -c 'test -z "$(tail -c 1 "$0")"
+                || (echo "No new line at end of $0" && exit 1)'
+                || exit 1
+        when:
+            branch:
+                exclude: [ master ]
+        depends_on:
+            - install
+
+    -   name: symfony requirements
+        image: astra50/gate-fpm:base
+        commands:
+            - vendor/bin/requirements-checker
+        when:
+            branch:
+                exclude: [ master ]
+        depends_on:
+            - install
+
+    -   name: symfony security
+        image: astra50/gate-fpm:base
+        commands:
+            - vendor/bin/security-checker security:check $APP_DIR/composer.lock
+        when:
+            branch:
+                exclude: [ master ]
+        depends_on:
+            - install
+
+    -   name: symfony linters
+        image: astra50/gate-fpm:base
+        commands:
+            - bin/console lint:yaml config
+            - bin/console lint:twig templates
+        depends_on:
+            - install
+
+    -   name: phpstan
+        image: astra50/gate-fpm:base
+        commands:
+            - vendor/bin/phpstan analyse --configuration phpstan.neon --no-progress --memory-limit=-1
+        depends_on:
+            - install
+
+    -   name: psalm
+        image: astra50/gate-fpm:base
+        commands:
+            - vendor/bin/psalm --show-info=false --no-progress
+        when:
+            event: [ push ]
+        depends_on:
+            - install
+
+    -   name: migration
+        image: astra50/gate-fpm:base
+        commands:
+            - $$WAIT_FOR_IT postgres:5432
+            - bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+        depends_on:
+            - install
+
+    -   name: fixtures
+        image: astra50/gate-fpm:base
+        commands:
+            - bin/console doctrine:fixtures:load --no-interaction
+        depends_on:
+            - migration
+
+    -   name: doctrine validate
+        image: astra50/gate-fpm:base
+        commands:
+            - bin/console doctrine:schema:validate
+        depends_on:
+            - migration
+
+    -   name: phpunit
+        image: astra50/gate-fpm:base
+        commands:
+            - vendor/bin/paratest --processes=$(nproc)
+        depends_on:
+            - fixtures
+
+    -   name: check deploy
+        image: alpine/git:1.0.7
+        commands:
+            - \[ "${DRONE_COMMIT_SHA}" == "$$(git ls-remote origin ${DRONE_COMMIT_BRANCH} | awk '{ print $1}')" ] || exit 78
+        when:
+            branch: [ master ]
+        depends_on:
+            - build prod
+            - phpunit
+            - phpstan
+            - psalm
+            - symfony requirements
+            - doctrine validate
+
+    -   name: deploy
+        image: docker/compose:1.25.0-alpine
+        volumes:
+            -   name: docker.sock
+                path: /var/run/docker.sock
+        commands:
+            - docker-compose --file docker-compose.prod.yml config | docker stack deploy --prune --with-registry-auth --compose-file - gate
+        environment:
+            VERSION: ${DRONE_BUILD_NUMBER}
+        when:
+            branch: [ master ]
+        depends_on:
+            - check deploy
+
+services:
+    -   name: postgres
+        image: postgres:12.2
+        environment:
+            POSTGRES_DB: db
+            POSTGRES_USER: db
+            POSTGRES_PASSWORD: db
+        tmpfs:
+            - /var/lib/postgresql/data
+
+volumes:
+    -   name: docker.sock
+        host:
+            path: /var/run/docker.sock
