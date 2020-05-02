@@ -68,7 +68,14 @@ final class DoctrineUserProvider implements UserProviderInterface, OAuthAwareUse
      */
     public function refreshUser(UserInterface $user)
     {
-        return $this->storage->getByUsername($user->getUsername());
+        try {
+            return $this->storage->getByUsername($user->getUsername());
+        } catch (UserNotFound $e) {
+            $e = new UsernameNotFoundException();
+            $e->setUsername($user->getUsername());
+
+            throw $e;
+        }
     }
 
     /**
