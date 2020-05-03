@@ -115,7 +115,7 @@ RUN apk add --no-cache gzip curl
 
 FROM nginx-base AS nginx
 
-#COPY --from=php-fpm /usr/local/app/public/favicon.ico favicon.ico
+COPY --from=php-fpm /usr/local/app/public/favicon.ico favicon.ico
 COPY --from=node /usr/local/app/public/assets assets
 
 COPY etc/nginx.conf /etc/nginx/nginx.conf
