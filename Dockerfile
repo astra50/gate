@@ -1,3 +1,26 @@
+FROM node:14.0.0-alpine as node-base
+
+LABEL MAINTAINER="Konstantin Grachev <me@grachevko.ru>"
+
+ENV APP_DIR=/usr/local/app
+ENV PATH=${APP_DIR}/node_modules/.bin:${PATH}
+
+WORKDIR ${APP_DIR}
+
+RUN apk add --no-cache git
+
+COPY package.json package-lock.json ${APP_DIR}/
+RUN npm install --no-audit
+
+FROM node-base as node
+
+COPY webpack.config.js ${APP_DIR}
+COPY postcss.config.js ${APP_DIR}
+COPY .babelrc ${APP_DIR}
+COPY assets ${APP_DIR}/assets
+
+RUN NODE_ENV=production webpack
+
 #
 # PHP-FPM
 #

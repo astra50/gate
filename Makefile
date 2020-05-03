@@ -38,7 +38,7 @@ docker-hosts-updater:
 ###> ALIASES ###
 pull:
 	$(DEBUG_ECHO) docker-compose pull
-do-up: contrib pull composer permissions
+do-up: contrib pull npm composer permissions
 	$(DEBUG_ECHO) docker-compose up --detach --remove-orphans --no-build
 up: do-up ## Up project
 	@$(notify)
@@ -49,6 +49,15 @@ cli: app-cli ## Get terminal inside php container
 down: ## Stop and remove all containers, volumes and networks
 	$(DEBUG_ECHO) docker-compose down -v --remove-orphans
 ###< ALIASES ###
+
+###> NODE ###
+NODE = $(DEBUG_ECHO) @docker-compose $(if $(EXEC),exec,run --rm )\
+	$(if $(ENTRYPOINT),--entrypoint "$(ENTRYPOINT)" )\
+	node
+
+npm:
+	$(NODE) npm install
+###< NODE ###
 
 ###> APP ###
 APP = $(DEBUG_ECHO) @docker-compose $(if $(EXEC),exec,run --rm )\
