@@ -20,6 +20,12 @@ services:
             APP_DEBUG: 1
             PHP_OPCACHE_ENABLE: 0
 
+    node:
+        image: astra50/gate-node:base
+        command: webpack --watch
+        volumes:
+            - ./:/usr/local/app
+
     postgres:
         image: postgres:12.2
         labels:

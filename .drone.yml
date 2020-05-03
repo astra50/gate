@@ -7,13 +7,32 @@ clone:
     depth: 1
 
 steps:
-    -   name: build base
+    -   name: build base node
+        image: docker:19.03.6
+        volumes:
+            -   name: docker.sock
+                path: /var/run/docker.sock
+        commands:
+            - docker build -t "astra50/gate-node:base" --progress=plain --target node-base .
+        environment:
+            DOCKER_BUILDKIT: '1'
+
+    -   name: build base php-fpm
         image: docker:19.03.6
         volumes:
             -   name: docker.sock
                 path: /var/run/docker.sock
         commands:
             - docker build -t "astra50/gate-fpm:base" --progress=plain --target php-fpm-base .
+        environment:
+            DOCKER_BUILDKIT: '1'
+
+    -   name: build base nginx
+        image: docker:19.03.6
+        volumes:
+            -   name: docker.sock
+                path: /var/run/docker.sock
+        commands:
             - docker build -t "astra50/gate-nginx:base" --progress=plain --target nginx-base .
         environment:
             DOCKER_BUILDKIT: '1'
@@ -37,7 +56,9 @@ steps:
         environment:
             DOCKER_BUILDKIT: '1'
         depends_on:
-            - build base
+            - build base node
+            - build base php-fpm
+            - build base nginx
 
     -   name: push base
         image: docker:19.03.6
@@ -46,6 +67,7 @@ steps:
                 path: /var/run/docker.sock
         commands:
             - docker login --username "$USERNAME" --password "$PASSWORD"
+            - docker push astra50/gate-node:base
             - docker push astra50/gate-fpm:base
             - docker push astra50/gate-nginx:base
         environment:
@@ -56,16 +78,26 @@ steps:
         when:
             branch: [ master ]
         depends_on:
-            - build base
+            - build base node
+            - build base php-fpm
+            - build base node
 
-    -   name: install
+    -   name: npm install
+        image: astra50/gate-node:base
+        commands:
+            - npm install --no-audit
+            - NODE_ENV=production node_modules/.bin/webpack
+        depends_on:
+            - build base node
+
+    -   name: composer install
         image: astra50/gate-fpm:base
         commands:
             - composer install --no-interaction --no-progress --classmap-authoritative
             - composer dump-env test
             - bin/console cache:warmup
         depends_on:
-            - build base
+            - build base php-fpm
 
     -   name: php-cs-fixer
         image: astra50/gate-fpm:base
@@ -75,10 +107,10 @@ steps:
             branch:
                 exclude: [ master ]
         depends_on:
-            - install
+            - composer install
 
     -   name: blank end line
-        image: astra50/gate-fpm:base
+        image: alpine:3.11.6
         commands:
             - >-
                 find .
@@ -88,14 +120,12 @@ steps:
                 -not -path "./var/*"
                 -not -path "./vendor/*"
                 -type f -exec grep -Iq . {} \; -and -print0
-                | xargs -0 -L1 bash -c 'test -z "$(tail -c 1 "$0")"
+                | xargs -0 sh -c 'test -z "$(tail -c 1 "$0")"
                 || (echo "No new line at end of $0" && exit 1)'
                 || exit 1
         when:
             branch:
                 exclude: [ master ]
-        depends_on:
-            - install
 
     -   name: symfony requirements
         image: astra50/gate-fpm:base
@@ -105,7 +135,7 @@ steps:
             branch:
                 exclude: [ master ]
         depends_on:
-            - install
+            - composer install
 
     -   name: symfony security
         image: astra50/gate-fpm:base
@@ -115,7 +145,7 @@ steps:
             branch:
                 exclude: [ master ]
         depends_on:
-            - install
+            - composer install
 
     -   name: symfony linters
         image: astra50/gate-fpm:base
@@ -123,14 +153,14 @@ steps:
             - bin/console lint:yaml config
             - bin/console lint:twig templates
         depends_on:
-            - install
+            - composer install
 
     -   name: phpstan
         image: astra50/gate-fpm:base
         commands:
             - vendor/bin/phpstan analyse --configuration phpstan.neon --no-progress --memory-limit=-1
         depends_on:
-            - install
+            - composer install
 
     -   name: psalm
         image: astra50/gate-fpm:base
@@ -139,7 +169,7 @@ steps:
         when:
             event: [ push ]
         depends_on:
-            - install
+            - composer install
 
     -   name: migration
         image: astra50/gate-fpm:base
@@ -147,7 +177,7 @@ steps:
             - $$WAIT_FOR_IT postgres:5432
             - bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
         depends_on:
-            - install
+            - composer install
 
     -   name: fixtures
         image: astra50/gate-fpm:base
@@ -168,6 +198,7 @@ steps:
         commands:
             - vendor/bin/paratest --processes=$(nproc)
         depends_on:
+            - npm install
             - fixtures
 
     -   name: check deploy
