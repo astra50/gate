@@ -7,6 +7,24 @@ clone:
     depth: 1
 
 steps:
+    -   name: blank end line
+        image: alpine:3.11.6
+        commands:
+            - >-
+                find .
+                -not -path "./.git/*"
+                -not -path "./public/*"
+                -not -path "./.idea/*"
+                -not -path "./var/*"
+                -not -path "./vendor/*"
+                -type f -exec grep -Iq . {} \; -and -print0
+                | xargs -0 sh -c 'test -z "$(tail -c 1 "$0")"
+                || (echo "No new line at end of $0" && exit 1)'
+                || exit 1
+        when:
+            branch:
+                exclude: [ master ]
+
     -   name: build base node
         image: docker:19.03.6
         volumes:
@@ -108,24 +126,6 @@ steps:
                 exclude: [ master ]
         depends_on:
             - composer install
-
-    -   name: blank end line
-        image: alpine:3.11.6
-        commands:
-            - >-
-                find .
-                -not -path "./.git/*"
-                -not -path "./public/*"
-                -not -path "./.idea/*"
-                -not -path "./var/*"
-                -not -path "./vendor/*"
-                -type f -exec grep -Iq . {} \; -and -print0
-                | xargs -0 sh -c 'test -z "$(tail -c 1 "$0")"
-                || (echo "No new line at end of $0" && exit 1)'
-                || exit 1
-        when:
-            branch:
-                exclude: [ master ]
 
     -   name: symfony requirements
         image: astra50/gate-fpm:base
