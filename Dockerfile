@@ -92,6 +92,7 @@ COPY src src
 COPY templates templates
 COPY translations translations
 COPY .env* .
+COPY --from=node /usr/local/app/public/manifest.json public/manifest.json
 
 RUN set -ex \
     && composer install --no-interaction --no-progress --no-dev --classmap-authoritative \
@@ -115,7 +116,7 @@ RUN apk add --no-cache gzip curl
 FROM nginx-base AS nginx
 
 #COPY --from=php-fpm /usr/local/app/public/favicon.ico favicon.ico
-#COPY --from=php-fpm /usr/local/app/public/assets assets
+COPY --from=node /usr/local/app/public/assets assets
 
 COPY etc/nginx.conf /etc/nginx/nginx.conf
 
