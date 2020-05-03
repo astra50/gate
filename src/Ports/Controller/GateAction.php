@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Ports\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
-final class GateAction
+final class GateAction extends AbstractController
 {
     public function __invoke(): Response
     {
-        return new Response('Here is Button!');
+        return $this->render('gate.html.twig');
     }
 }
