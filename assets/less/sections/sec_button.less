@@ -49,6 +49,71 @@
   }
 }
 
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.gate-btn {
+  font-size: 180px;
+  position: relative;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  float: left;
+  margin: 0 .1em .1em 0;
+  background-color: rgba(245, 245, 245, 0.4);
+
+  & * {
+    box-sizing: content-box;
+  }
+
+  & span {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    top: calc(50% - .1em);
+    transform: translateY(-50%);
+    height: 1em;
+    font-size: .2em;
+    color: #ccc;
+    display: block;
+    text-align: center;
+    white-space: nowrap;
+    transition: transform .2s ease-in-out;
+  }
+
+  & .bar {
+    position: absolute;
+    border: .08em solid #900035;
+    width: .84em;
+    height: .84em;
+    clip: rect(0,.5em,1em,0);
+    border-radius: 50%;
+    transition: transform .6s ease-in-out;
+    transform: rotate(50deg);
+  }
+
+  & .slice {
+    position: absolute;
+    width: 1em;
+    height: 1em;
+    clip: rect(0,1em,1em,.5em);
+  }
+
+  &:after {
+    position: absolute;
+    top: .08em;
+    left: .08em;
+    display: block;
+    content: " ";
+    border-radius: 50%;
+    background-color: rgba(245, 245, 245, 0.9);
+    width: .84em;
+    height: .84em;
+  }
+}
+
 @media (max-width: 960px) {
   .sec-login {
     &__front{
