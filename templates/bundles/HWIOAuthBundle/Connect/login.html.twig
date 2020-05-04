@@ -15,12 +15,10 @@
                         </div>
                         <ul class="social">
                             {% for owner in hwi_oauth_resource_owners() %}
-                            <li><a href="{{ hwi_oauth_login_url(owner) }}" ><i class="fab fa-vk"></i><i class="icon icon_{{ owner | trans({}, 'HWIOAuthBundle') }}"></i></a></li>
+                            <li><a href="{{ hwi_oauth_login_url(owner) }}" ><i class="icon icon_{{ owner | trans({}, 'HWIOAuthBundle') }}"></i></a></li>
                             {% endfor %}
-{#                            <a href="#"></a>#}
-{#                            <li><a href="#"></a></li>#}
-{#                            <li><a href="#"></a></li>#}
-{#                            <li><a href="#"></a></li>#}
+                            <li><a href="#"><i class="icon icon_google"></i></a></li>
+                            <li><a href="#"><i class="icon icon_instagram"></i></a></li>
                         </ul>   
                     </div>
                 </div>

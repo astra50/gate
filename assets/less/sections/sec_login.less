@@ -59,8 +59,8 @@
   }
 
   &__note {
-    margin: 15px 0;
-    font-size: 25px;
+    margin-bottom: 35px;
+    font-size: 30px;
     text-align: center;
   }
 }
@@ -68,11 +68,13 @@
 .social {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: center;
   list-style-type: none;
+  line-height: 100px;
 
   & > li {
-    padding: 0 15px;
+    padding: 0 25px;
   }
 
   & a {
@@ -82,9 +84,37 @@
 }
 
 .icon {
+  display: block;
+  font-family: "Font Awesome 5 Brands", sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 65px;
+
+  &:hover {
+
+  }
+
   &_vkontakte {
     &:before {
       content: @fa-var-vk;
+    }
+  }
+
+  &_yandex {
+    &:before {
+      content: @fa-var-yandex;
+    }
+  }
+
+  &_google {
+    &:before {
+      content: @fa-var-google;
+    }
+  }
+
+  &_instagram {
+    &:before {
+      content: @fa-var-instagram;
     }
   }
 }
