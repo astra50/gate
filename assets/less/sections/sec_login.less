@@ -72,6 +72,8 @@
   justify-content: center;
   list-style-type: none;
   line-height: 100px;
+  font-weight: 500;
+  font-size: 65px;
 
   & > li {
     padding: 0 25px;
@@ -80,6 +82,11 @@
   & a {
     text-decoration: none;
     color: inherit;
+    transition: color .3s ease-in-out;
+
+    &:hover {
+      color: #197C28;
+    }
   }
 }
 
@@ -87,12 +94,6 @@
   display: block;
   font-family: "Font Awesome 5 Brands", sans-serif;
   font-style: normal;
-  font-weight: 500;
-  font-size: 65px;
-
-  &:hover {
-
-  }
 
   &_vkontakte {
     &:before {
