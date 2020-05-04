@@ -13,6 +13,7 @@ security:
                 resource_owners:
                     vkontakte: /connect/service/vkontakte
                     yandex: /connect/service/yandex
+                    google: /connect/service/google
                 login_path: /login
                 use_forward: false
                 failure_path: /login
