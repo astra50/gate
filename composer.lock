@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "293faba9954e99343968193b7e88ff0a",
+    "content-hash": "223da50fbd8257bb13fcc898c255c839",
     "packages": [
         {
             "name": "brick/math",
@@ -57,6 +57,48 @@
                 }
             ],
             "time": "2020-04-15T15:59:35+00:00"
+        },
+        {
+            "name": "centrifugal/phpcent",
+            "version": "3.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/centrifugal/phpcent.git",
+                "reference": "cc444c30a112f6eb819469522086acaa594b1953"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/centrifugal/phpcent/zipball/cc444c30a112f6eb819469522086acaa594b1953",
+                "reference": "cc444c30a112f6eb819469522086acaa594b1953",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "phpcent\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHP library to communicate with Centrifugo HTTP API",
+            "homepage": "https://github.com/centrifugal/phpcent",
+            "keywords": [
+                "centrifugo",
+                "messaging",
+                "realtime",
+                "websocket"
+            ],
+            "time": "2020-03-12T19:05:49+00:00"
         },
         {
             "name": "clue/stream-filter",

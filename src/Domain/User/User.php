@@ -53,6 +53,11 @@ class User implements UserInterface, EquatableInterface, Serializable
         $this->createdAt = new DateTimeImmutable();
     }
 
+    public function toId(): UuidInterface
+    {
+        return $this->id;
+    }
+
     public function getPassword(): ?string
     {
         return null;

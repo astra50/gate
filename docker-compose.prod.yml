@@ -28,6 +28,8 @@ services:
         image: astra50/gate-fpm:${VERSION}
         networks:
             - astra50gate
+        environment:
+            CENTRIFUGO_URL: https://centrifugo.astra50.ru/api
         volumes:
           - /etc/astra50/gate_env:/usr/local/app/.env:ro
         secrets:
