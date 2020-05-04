@@ -1,5 +1,24 @@
 {% extends 'layout.html.twig' %}
 
 {% block body %}
-    Here is button!
-{% endblock %}
+    <div class="site-wrapper">
+        <main class="site-main">
+            <section class="sec-button">
+                <div class="sec-button__back"></div>
+                <div class="sec-button__front">
+                    <div class="container">
+                        <div class="sec-button__messages">
+                            Нажми на кнопку - получишь в результат
+                        </div>
+                        <div class="timer">
+                            <div class="timer__sec">60</div>
+                            <div class="timer_unit">секунд до активации</div>
+                        </div>
+                        <div class="sec-button_button"><span>Открыть<br>Ворота</span></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+{% endblock body %}
