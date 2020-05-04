@@ -40,7 +40,7 @@ pull:
 	$(DEBUG_ECHO) docker-compose pull
 do-up: contrib pull npm composer permissions
 	$(DEBUG_ECHO) docker-compose up --detach --remove-orphans --no-build
-up: do-up ## Up project
+up: do-up migration ## Up project
 	@$(notify)
 latest: do-up backup-latest ## Up project with latest backup from server
 	@$(notify)
