@@ -206,7 +206,7 @@ steps:
         commands:
             - \[ "${DRONE_COMMIT_SHA}" == "$$(git ls-remote origin ${DRONE_COMMIT_BRANCH} | awk '{ print $1}')" ] || exit 78
         when:
-            branch: [ master ]
+            branch: [ master, rc ]
         depends_on:
             - build prod
             - phpunit
@@ -227,7 +227,7 @@ steps:
         environment:
             VERSION: ${DRONE_BUILD_NUMBER}
         when:
-            branch: [ master ]
+            branch: [ master, rc ]
         depends_on:
             - check deploy
 
