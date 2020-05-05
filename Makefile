@@ -27,9 +27,6 @@ help-short:
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-contrib:
-	$(DEBUG_ECHO) @cp -n -r contrib/.env contrib/* ./ || true
-
 docker-hosts-updater:
 	$(DEBUG_ECHO) docker pull grachev/docker-hosts-updater
 	$(DEBUG_ECHO) docker rm -f docker-hosts-updater || true
@@ -38,7 +35,7 @@ docker-hosts-updater:
 ###> ALIASES ###
 pull:
 	$(DEBUG_ECHO) docker-compose pull
-do-up: contrib pull npm composer permissions
+do-up: pull npm composer permissions
 	$(DEBUG_ECHO) docker-compose up --detach --remove-orphans --no-build
 up: do-up migration ## Up project
 	@$(notify)
