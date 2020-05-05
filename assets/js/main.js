@@ -1,6 +1,9 @@
 class ProgressBar {
 
   _value = 0
+  _animationTime = 1000
+  isCancelAnimation = false
+  isAnimation = false
 
   constructor(selector, option={}) {
     const defaultOptions = {
@@ -9,28 +12,53 @@ class ProgressBar {
       min: 0,
       startColor: [255, 0, 0],
       middleColor: [255, 255, 0],
-      finishColor: [0, 128, 0]
-    }
-    this._node = document.querySelector(selector);
+      finishColor: [0, 128, 0],
+      message: 'message'
+    };
+    const wrapper = document.createElement('div');
 
     this._options = Object.assign(defaultOptions, option)
-    this._currentColor = [...this._options.startColor];
-    this._barNode = this._node.querySelector('.bar')
-    this._fillNode = this._node.querySelector('.fill')
+
+    wrapper.innerHTML = `<div class="circle-button">
+                             <div class="_note">
+                                    <span>${defaultOptions.message}</span>
+                             </div>
+                             <div class="_line"></div>
+                             <div class="_r-mask"></div>
+                         </div>`
+    this._node = wrapper.firstChild;
+    this._lineNode = this._node.querySelector('._line')
+    this._maskNode = this._node.querySelector('._r-mask')
+    this._messageNode = this._node.querySelector('span')
+    document.querySelector(selector).append(this._node);
+    this._node.style.boxShadow = `0 0 20px rgba(${defaultOptions.startColor.join(', ')}`
     this.value = defaultOptions.start;
+  }
+
+  set animationTime(val) {
+    this._animationTime = val;
+  }
+
+  get animationTime() {
+    return this._animationTime * 1000;
   }
 
   set value(val) {
     const {max, min} = {...this._options}
     val = val > max ? max : val;
     val = val < min ? min : val;
-    this._changeBarPosition(val);
-    this._currentColor = this._changeColor(val);
-    this._value = val;
-  }
+    this._changeBarPosition(val).then(()=> {
+      this.isAnimation = false;
+      this.isCancelAnimation = false;
+    });
+   }
 
   get value() {
     return this._value;
+  }
+
+  stopAnimation() {
+    if(this.isAnimation) this.isCancelAnimation = true;
   }
 
   _changeColor(value) {
@@ -39,37 +67,51 @@ class ProgressBar {
 
     const calcColor = (pValue, firstColor, secondColor) => {
       return [0, 0, 0].map((val, i) =>
-          Math.floor(firstColor[i] + (secondColor[i] - firstColor[i]) * (1 - pValue)))
+          Math.floor(firstColor[i] + (secondColor[i] - firstColor[i]) * pValue))
     }
 
     if (value <= (max - min) / 2){
-      colorForSet = calcColor(1 - value/(max/2), startColor, middleColor);
+      colorForSet = calcColor(value/(max/2), startColor, middleColor);
     } else {
       colorForSet = calcColor(value/(max/2) - 1, middleColor, finishColor);
     }
 
-    this._fillNode.style.borderColor = `rgba(${colorForSet.join(', ')})`;
-    this._barNode.style.borderColor = `rgba(${colorForSet.join(', ')})`;
+    this._maskNode.style.backgroundColor = `rgba(${colorForSet.join(', ')})`;
+    this._lineNode.style.backgroundColor = `rgba(${colorForSet.join(', ')})`;
+    this._node.style.boxShadow = `0 0 20px rgba(${colorForSet.join(', ')}`;
     return colorForSet;
   }
 
-  _changeBarPosition (value) {
-    const {min, max} = {...this._options}
-    const deg = 360 * value / (max - min)
-    this._node.classList.toggle('gt50', deg > 180)
-    setTimeout(()=> this._barNode.style.transform = `rotate(${deg}deg)`, 0)
-    ;
-  }
+  async _changeBarPosition (newValue) {
+    const {min, max} = {...this._options},
+          oldValue = this.value;
+    let   steps = (Math.abs(newValue - oldValue)) * 10;
 
+    const animation = step => new Promise(resolve => {
+      setTimeout(()=> {
+        let stepValue = oldValue + (newValue - oldValue) / steps * step,
+            deg = 360 * stepValue / (max - min);
+        this._value = stepValue;
+        this._lineNode.style.transform = `rotate(${deg}deg)`;
+        this._node.classList.toggle('gt50', deg >= 180);
+        this._changeColor(stepValue)
+        resolve();
+      }, this._animationTime/steps)
+    })
+
+    this.isAnimation = true;
+    for (let i = 1; i <= steps; i++) {
+      if (this.isCancelAnimation) return Promise.resolve();
+      await animation(i);
+    }
+  }
 }
 
-const gr = new ProgressBar('#gate-button')
+const gr = new ProgressBar('#gate-button', {
+  startColor: [194, 4, 55],
+  middleColor: [214, 121, 4],
+  finishColor: [3, 146, 85]
+})
 
-console.log(gr)
-
-// gr.value = 10;
-
-// setTimeout(()=>gr.value=25, 1000)
-// setTimeout(()=>gr.value=75, 2000)
-// setTimeout(()=>gr.value=35, 3000)
-// window.gr = gr
+window.gr = gr
+a = 1
