@@ -117,6 +117,7 @@ FROM nginx-base AS nginx
 
 COPY --from=php-fpm /usr/local/app/public/favicon.ico favicon.ico
 COPY --from=node /usr/local/app/public/assets assets
+COPY --from=node /usr/local/app/public/img img
 
 COPY etc/nginx.conf /etc/nginx/nginx.conf
 
