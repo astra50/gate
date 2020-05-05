@@ -1,0 +1,60 @@
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  color: @dark;
+  font: 400 16px/24px @circe;
+  margin: 0;
+}
+
+.container {
+  position: relative;
+  max-width: @max-width;
+  min-width: @min-width;
+  width: 100%;
+  margin: 0 auto;
+  padding-left: 80px;
+  padding-right: 80px;
+
+  &_wide {
+    max-width: none;
+  }
+}
+
+.site {
+
+  &-wrapper {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    min-height: 100%;
+    min-width: @min-width;
+    overflow: hidden;
+    transition: opacity 0.3s;
+  }
+  &-main {
+    display: block;
+    flex: 1 0 auto;
+  }
+}
+
+@media (max-width: 1620px) {
+  .container {
+    max-width: 1200px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+@media (max-width: 760px) {
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}

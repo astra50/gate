@@ -1,11 +1,32 @@
 {% extends 'layout.html.twig' %}
 
 {% block body %}
+    <div class="site-wrapper">
+        <main class="site-main">
+            <section class="sec-login">
+                <div class="sec-login__back"></div>
+                <div class="sec-login__front">
+                    <div class="sec-login__logo">
+                        <img src="/img/astra_logo.png" alt="Астра">
+                    </div>
+                    <div class="container">
+                        <div class="sec-login__note">
+                            Войти с помощью ...
+                        </div>
+                        <ul class="social">
+                            {% for owner in hwi_oauth_resource_owners() %}
+                            <li><a href="{{ hwi_oauth_login_url(owner) }}" ><i class="icon icon_{{ owner | trans({}, 'HWIOAuthBundle') }}"></i></a></li>
+                            {% endfor %}
+                            <li><a href="#"><i class="icon icon_google"></i></a></li>
+                            <li><a href="#"><i class="icon icon_instagram"></i></a></li>
+                        </ul>   
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
     {% if error is defined and error %}
         <span>{{ error }}</span>
     {% endif %}
-    Fuck yeah!
-    {% for owner in hwi_oauth_resource_owners() %}
-    <a href="{{ hwi_oauth_login_url(owner) }}">{{ owner | trans({}, 'HWIOAuthBundle') }}</a> <br />
-    {% endfor %}
+
 {% endblock body %}

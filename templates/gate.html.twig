@@ -1,5 +1,22 @@
 {% extends 'layout.html.twig' %}
 
 {% block body %}
-    Here is button!
-{% endblock %}
+    <div class="site-wrapper">
+        <main class="site-main">
+            <section class="sec-button">
+                <div class="sec-button__back"></div>
+                <div class="sec-button__front">
+                    <div class="container">
+                        <div class="sec-button__messages">
+                            Нажми на кнопку - получишь в результат
+                        </div>
+                        <div class="button-wrapper" id="gate-button">
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+{% endblock body %}
