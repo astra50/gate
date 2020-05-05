@@ -10,4 +10,9 @@
       <code>iterable</code>
     </LessSpecificImplementedReturnType>
   </file>
+  <file src="src/Ports/Controller/GateAction.php">
+    <PropertyNotSetInConstructor occurrences="1">
+      <code>GateAction</code>
+    </PropertyNotSetInConstructor>
+  </file>
 </files>

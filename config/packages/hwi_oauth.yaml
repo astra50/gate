@@ -16,6 +16,15 @@ hwi_oauth:
             client_secret:       '%env(VKONTAKTE_SECRET)%'
             options:
                 csrf: true
+        google:
+            type:                google
+            client_id:           '%env(GOOGLE_ID)%'
+            client_secret:       '%env(GOOGLE_SECRET)%'
+            scope:               "email"
+        mailru:
+            type:                mailru
+            client_id:           '%env(MAILRU_ID)%'
+            client_secret:       '%env(MAILRU_SECRET)%'
     http:
         client: httplug.oauth.client
         message_factory: httplug.oauth.client

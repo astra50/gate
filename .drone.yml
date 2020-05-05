@@ -206,7 +206,7 @@ steps:
         commands:
             - \[ "${DRONE_COMMIT_SHA}" == "$$(git ls-remote origin ${DRONE_COMMIT_BRANCH} | awk '{ print $1}')" ] || exit 78
         when:
-            branch: [ master ]
+            branch: [ master, rc ]
         depends_on:
             - build prod
             - phpunit
@@ -218,6 +218,8 @@ steps:
     -   name: deploy
         image: docker/compose:1.25.0-alpine
         volumes:
+            -   name: env
+                path: /drone/src/.env
             -   name: docker.sock
                 path: /var/run/docker.sock
         commands:
@@ -225,9 +227,24 @@ steps:
         environment:
             VERSION: ${DRONE_BUILD_NUMBER}
         when:
-            branch: [ master ]
+            branch: [ master, rc ]
         depends_on:
             - check deploy
+
+    -   name: remove rc branch
+        image: alpine/git:1.0.7
+        commands:
+            - git remote set-url origin ${DRONE_GIT_SSH_URL}
+            - mkdir -p ~/.ssh -m 700
+            - ssh-keyscan github.com >> ~/.ssh/known_hosts
+            - echo "$GIT_SSH_KEY" > ~/.ssh/id_rsa
+            - chmod 600 ~/.ssh/id_rsa
+            - git push origin --delete rc
+        environment:
+            GIT_SSH_KEY:
+                from_secret: GIT_SSH_KEY
+        when:
+            branch: [ rc ]
 
 services:
     -   name: postgres
@@ -243,3 +260,6 @@ volumes:
     -   name: docker.sock
         host:
             path: /var/run/docker.sock
+    -   name: env
+        host:
+            path: /etc/astra50/gate_env
