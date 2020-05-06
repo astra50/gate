@@ -2,9 +2,11 @@ import './gate-button.less'
 
 class GateButton {
 
+  _message = ''
+
   constructor(selector, option={}) {
     const defaultOptions = {
-      message: 'TEST MSG',
+      message: '',
       size: 160,
       onClick: function() {console.log('click') }
     }
