@@ -77,7 +77,6 @@
   height: content-box;
 
   & > li {
-    display: block;
     width: 90px;
     height: 90px;
     margin: 0 20px;
@@ -127,6 +126,14 @@
   &_instagram {
     &:before {
       content: @fa-var-instagram;
+    }
+  }
+
+  &_mailru {
+    &:before {
+      content: "@";
+      position: relative;
+      top: -5px
     }
   }
 }
