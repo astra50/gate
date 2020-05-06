@@ -58,7 +58,7 @@ class ProgressBar {
     return this._animationTime / 1000;
   }
 
-  get isActive() {
+  get isFull() {
     return this.value === this._options.max
   }
 
@@ -130,10 +130,10 @@ class ProgressBar {
         this._changeColor(stepValue)
         this._onChangePosition();
         this._value = stepValue;
-        if (this.isActive) {
+        if (this.isFull) {
           this._onComplete(this.value)
         }
-        this._node.classList.toggle('is-active', this.isActive);
+
         resolve();
       }, this._animationTime/steps)
     })

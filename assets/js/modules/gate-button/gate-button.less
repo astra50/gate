@@ -18,31 +18,34 @@
       align-items: center;
       justify-content: center;
       height: 100%;
+      user-select: none;
       transition: transform 0.2s ease-in-out;
     }
   }
 
-  &:hover {
-    cursor: default;
+  &.is-active {
+    &:hover {
+      cursor: default;
 
-    & ._note {
-      box-shadow: 0 0 0.15em 2px rgba(225, 225, 225, 0.4);
+      & ._note {
+        box-shadow: 0 0 0.15em 2px rgba(225, 225, 225, 0.4);
 
-      & > span {
-        color: rgb(100, 100, 100);
+        & > span {
+          color: rgb(100, 100, 100);
+        }
       }
     }
-  }
 
-  &:active {
-    cursor: default;
+    &:active {
+      cursor: default;
 
-    & ._note {
-      box-shadow: 0 0 0.4em 4px rgb(225, 225, 225);
-      transform: scale(0.9);
+      & ._note {
+        box-shadow: 0 0 0.4em 4px rgb(225, 225, 225);
+        transform: scale(0.9);
 
-      & > span {
-        transform: scale(0.95);
+        & > span {
+          transform: scale(0.95);
+        }
       }
     }
   }

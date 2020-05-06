@@ -23,20 +23,33 @@ function SecButton() {
     size: 180,
     min: 0,
     max: 60,
-    onChangePosition: value => gateBtn.setText(`${60 - Math.round(value)}c.`, '0.3em')
+    onChangePosition: value => {
+      gateBtn.setText(`${60 - Math.round(value)}c.`, '0.3em');
+      gateBtn.deactivateButton()
+    },
+    onComplete: () => {
+      gateBtn.setText('Открыть', '0.2em');
+      gateBtn.activateButton();
+    }
   })
 
   const gateBtn = new GateButton(buttonSelector, {
     message: SPINNER,
     fontSize: '0.2em',
     size: 170,
-    onClick: () => console.log('Запрос на сервер'),
+    onClick: () => {
+      if (progressBar.isFull) {
+        console.log('Запрос на сервер');
+      } else {
+        console.log('Не готово');
+      }
+    },
   })
 
   const server = new Server(URL)
 
   server.onConnect = () => {
-    gateBtn.setText('Ура, есть контакт!', '0.1em')
+    gateBtn.setText('Ура, есть контакт!', '0.13em')
   }
 
   server.onResponse = async data => {
