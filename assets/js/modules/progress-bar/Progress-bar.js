@@ -6,7 +6,6 @@ class ProgressBar {
   _animationTime = 1000
   _isCancelAnimation = false
   _isAnimation = false
-  _isActive = false;
 
   constructor(selector, option={}) {
     const defaultOptions = {
@@ -19,6 +18,7 @@ class ProgressBar {
       size: 200,
       animationTime: 1000,
       onChangePosition: (value) => {},
+      onComplete: (value) => {},
     };
 
     this._options = Object.assign(defaultOptions, option)
@@ -40,6 +40,7 @@ class ProgressBar {
     this._node.style.fontSize = `${defaultOptions.size}px`;
 
     this._onChangePosition = () => defaultOptions.onChangePosition(this.value)
+    this._onComplete = () => defaultOptions.onComplete(this.value)
 
     this._animationTime = 1000
     this._changeBarPosition(this._options.start).then(()=> {
@@ -58,7 +59,7 @@ class ProgressBar {
   }
 
   get isActive() {
-    return this._isActive
+    return this.value === this._options.max
   }
 
   set isActive(val) { }
@@ -96,7 +97,7 @@ class ProgressBar {
 
   _changeColor(value) {
     const {max, min, startColor, middleColor, finishColor} = {...this._options};
-    let colorForSet = [];
+    let colorForSet;
 
     const calcColor = (pValue, firstColor, secondColor) => {
       return [0, 0, 0].map((val, i) =>
@@ -129,6 +130,10 @@ class ProgressBar {
         this._changeColor(stepValue)
         this._onChangePosition();
         this._value = stepValue;
+        if (this.isActive) {
+          this._onComplete(this.value)
+        }
+        this._node.classList.toggle('is-active', this.isActive);
         resolve();
       }, this._animationTime/steps)
     })
