@@ -7,6 +7,8 @@ namespace App\Ports\Controller;
 use App\Domain\User\User;
 use phpcent\Client as Centrifugo;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -21,9 +23,13 @@ final class GateAction extends AbstractController
         $this->centrifugo = $centrifugo;
     }
 
-    public function __invoke(): Response
+    public function __invoke(Request $request): Response
     {
         $user = $this->getUser();
+
+        if ($request->isMethod('POST')) {
+            return new JsonResponse();
+        }
 
         return $this->render('gate.html.twig', [
             'centrifugo_token' => $this->centrifugo->generateConnectionToken($user->toId()->toString()),

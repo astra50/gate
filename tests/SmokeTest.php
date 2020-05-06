@@ -13,12 +13,23 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class SmokeTest extends WebTestCase
 {
-    public function test(): void
+    public function testGet(): void
     {
         $client = static::createClient();
         $this->logIn($client);
 
         $client->request('GET', '/');
+        $response = $client->getResponse();
+
+        static::assertSame(200, $response->getStatusCode());
+    }
+
+    public function testPost(): void
+    {
+        $client = static::createClient();
+        $this->logIn($client);
+
+        $client->request('POST', '/');
         $response = $client->getResponse();
 
         static::assertSame(200, $response->getStatusCode());
