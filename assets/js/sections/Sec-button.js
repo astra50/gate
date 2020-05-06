@@ -10,7 +10,7 @@ const PROGRESS_BAR_FINISH_COLOR = [3, 146, 85];
 const SPINNER = '<div class="lds-roller" style="background: #f5f5f5">' +
     '<div></div><div></div><div></div><div></div>' +
     '<div></div><div></div><div></div><div></div></div>'
-const API_URL = `${location.protocol === 'https' ? 'wss' : 'ws'}://${location.host.replace(/gate/, 'centrifugo')}/connection/websocket`
+const API_URL = `${location.protocol === 'http:' ? 'ws' : 'wss'}://${location.host.replace(/gate/, 'centrifugo')}/connection/websocket`
 
 function SecButton() {
   const buttonSelector = '#gate-button';
