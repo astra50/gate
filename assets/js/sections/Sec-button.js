@@ -10,7 +10,7 @@ const PROGRESS_BAR_FINISH_COLOR = [3, 146, 85];
 const SPINNER = '<div class="lds-roller" style="background: #f5f5f5">' +
     '<div></div><div></div><div></div><div></div>' +
     '<div></div><div></div><div></div><div></div></div>'
-const URL = 'ws://centrifugo.astra50.local/connection/websocket'
+const API_URL = `${location.protocol === 'https' ? 'wss' : 'ws'}://${location.host.replace(/gate/, 'centrifugo')}/connection/websocket`
 
 function SecButton() {
   const buttonSelector = '#gate-button';
@@ -46,7 +46,7 @@ function SecButton() {
     },
   })
 
-  const server = new Server(URL)
+  const server = new Server(API_URL)
 
   server.onConnect = () => {
     gateBtn.setText('Ура, есть контакт!', '0.13em')
@@ -62,7 +62,6 @@ function SecButton() {
   }
 
   server.connect(token);
-
 }
 
 export default SecButton;
