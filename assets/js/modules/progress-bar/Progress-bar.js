@@ -6,6 +6,7 @@ class ProgressBar {
   _animationTime = 1000
   _isCancelAnimation = false
   _isAnimation = false
+  _isActive = false;
 
   constructor(selector, option={}) {
     const defaultOptions = {
@@ -56,18 +57,25 @@ class ProgressBar {
     return this._animationTime / 1000;
   }
 
-  set value(val) {
+  get isActive() {
+    return this._isActive
+  }
+
+  set isActive(val) { }
+
+  async setValue(val) {
     const {max, min} = {...this._options}
     val = val > max ? max : val;
     val = val < min ? min : val;
+
     if(this._isAnimation) {
       console.error('Animation in process');
       return;
     }
-    this._changeBarPosition(val).then(()=> {
-      this._isAnimation = false;
-      this._isCancelAnimation = false;
-    });
+
+    await this._changeBarPosition(val)
+    this._isAnimation = false;
+    this._isCancelAnimation = false;
   }
 
   get value() {
