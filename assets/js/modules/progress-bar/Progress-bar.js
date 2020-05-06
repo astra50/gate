@@ -15,7 +15,9 @@ class ProgressBar {
       startColor: [255, 0, 0],
       middleColor: [255, 255, 0],
       finishColor: [0, 128, 0],
-      size: 180
+      size: 200,
+      animationTime: 1000,
+      onChangePosition: (value) => {},
     };
 
     this._options = Object.assign(defaultOptions, option)
@@ -33,8 +35,17 @@ class ProgressBar {
     this._node.append(this._lineNode);
     this._node.append(this._maskNode);
 
-    this._node.style.boxShadow = `0 0 20px rgba(${defaultOptions.startColor.join(', ')}`
-    this.value = defaultOptions.start;
+    this._node.style.boxShadow = `0 0 20px rgba(${defaultOptions.startColor.join(', ')}`;
+    this._node.style.fontSize = `${defaultOptions.size}px`;
+
+    this._onChangePosition = () => defaultOptions.onChangePosition(this.value)
+
+    this._animationTime = 1000
+    this._changeBarPosition(this._options.start).then(()=> {
+      this._isAnimation = false;
+      this._isCancelAnimation = false;
+      this._animationTime = this._options.animationTime;
+    })
   }
 
   set animationTime(val) {
@@ -49,6 +60,10 @@ class ProgressBar {
     const {max, min} = {...this._options}
     val = val > max ? max : val;
     val = val < min ? min : val;
+    if(this._isAnimation) {
+      console.error('Animation in process');
+      return;
+    }
     this._changeBarPosition(val).then(()=> {
       this._isAnimation = false;
       this._isCancelAnimation = false;
@@ -59,8 +74,16 @@ class ProgressBar {
     return this._value;
   }
 
-  stopAnimation() {
-    if(this._isAnimation) this._isCancelAnimation = true;
+  async stopAnimation() {
+    const checkerTimeout = () => new Promise(resolve => {
+      setTimeout(()=>resolve(), 200);
+    })
+    if(this._isAnimation) {
+      this._isCancelAnimation = true;
+      while (this._isAnimation) {
+        await checkerTimeout();
+      }
+    }
   }
 
   _changeColor(value) {
@@ -93,10 +116,11 @@ class ProgressBar {
       setTimeout(()=> {
         let stepValue = oldValue + (newValue - oldValue) / steps * step,
             deg = 360 * stepValue / (max - min);
-        this._value = stepValue;
         this._lineNode.style.transform = `rotate(${deg}deg)`;
         this._node.classList.toggle('gt50', deg >= 180);
         this._changeColor(stepValue)
+        this._onChangePosition();
+        this._value = stepValue;
         resolve();
       }, this._animationTime/steps)
     })
