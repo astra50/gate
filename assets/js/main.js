@@ -1,3 +1,7 @@
+
+
+
+
 class App {
   iniSecs() {
     if (document.querySelector('section.sec-button')) {
@@ -9,9 +13,11 @@ class App {
 
   run() {
     this.iniSecs();
+
   }
 }
 
 const app = new App();
 app.run();
+
 
