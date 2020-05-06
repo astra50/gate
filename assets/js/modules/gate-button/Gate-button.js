@@ -8,6 +8,7 @@ class GateButton {
     const defaultOptions = {
       message: '',
       size: 160,
+      fontSize: '0.2em',
       onClick: function() {console.log('click') }
     }
 
@@ -23,19 +24,18 @@ class GateButton {
                          </div>`;
     this._messageNode = wrapper.querySelector('span');
     wrapper.firstElementChild.addEventListener('click', defaultOptions.onClick)
+    this._messageNode.style.fontSize = defaultOptions.fontSize;
 
     this._node.append(wrapper.firstElementChild);
   }
 
-  set message(val) {
+  setText(val, fontSize = '') {
     this._message = val;
     this._messageNode.textContent = val;
+    if (fontSize) {
+      this._messageNode.style.fontSize = fontSize;
+    }
   }
-
-  get message() {
-    return this._message;
-  }
-
 }
 
 export default GateButton;
