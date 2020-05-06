@@ -1,9 +1,11 @@
+import './progress-button.less'
+
 class ProgressBar {
 
   _value = 0
   _animationTime = 1000
-  isCancelAnimation = false
-  isAnimation = false
+  _isCancelAnimation = false
+  _isAnimation = false
 
   constructor(selector, option={}) {
     const defaultOptions = {
@@ -13,20 +15,24 @@ class ProgressBar {
       startColor: [255, 0, 0],
       middleColor: [255, 255, 0],
       finishColor: [0, 128, 0],
-      message: 'message'
+      size: 180
     };
-    const wrapper = document.createElement('div');
 
     this._options = Object.assign(defaultOptions, option)
 
-    wrapper.innerHTML = `<div class="circle-button">
-                             <div class="_line"></div>
-                             <div class="_r-mask"></div>
-                         </div>`
-    this._node = wrapper.firstChild;
-    this._lineNode = this._node.querySelector('._line')
-    this._maskNode = this._node.querySelector('._r-mask')
-    document.querySelector(selector).append(this._node);
+    this._node = document.querySelector(selector);
+
+    if (!this._node) throw new Error('Wrong ProgressBar selector: ' + selector);
+
+    this._lineNode = document.createElement('div');
+    this._lineNode.classList.add('_line');
+
+    this._maskNode = document.createElement('div');
+    this._maskNode.classList.add('_r-mask');
+
+    this._node.append(this._lineNode);
+    this._node.append(this._maskNode);
+
     this._node.style.boxShadow = `0 0 20px rgba(${defaultOptions.startColor.join(', ')}`
     this.value = defaultOptions.start;
   }
@@ -44,8 +50,8 @@ class ProgressBar {
     val = val > max ? max : val;
     val = val < min ? min : val;
     this._changeBarPosition(val).then(()=> {
-      this.isAnimation = false;
-      this.isCancelAnimation = false;
+      this._isAnimation = false;
+      this._isCancelAnimation = false;
     });
   }
 
@@ -54,7 +60,7 @@ class ProgressBar {
   }
 
   stopAnimation() {
-    if(this.isAnimation) this.isCancelAnimation = true;
+    if(this._isAnimation) this._isCancelAnimation = true;
   }
 
   _changeColor(value) {
@@ -95,9 +101,9 @@ class ProgressBar {
       }, this._animationTime/steps)
     })
 
-    this.isAnimation = true;
+    this._isAnimation = true;
     for (let i = 1; i <= steps; i++) {
-      if (this.isCancelAnimation) return Promise.resolve();
+      if (this._isCancelAnimation) return Promise.resolve();
       await animation(i);
     }
   }
