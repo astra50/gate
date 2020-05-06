@@ -1,5 +1,7 @@
 import ProgressBar from '../modules/progress-bar/Progress-bar';
 import GateButton from '../modules/gate-button/Gate-button';
+import Server from '../modules/server/CentrifugeServer';
+
 import '../../less/helpers/spinners.less'
 
 const PROGRESS_BAR_START_COLOR = [194, 4, 55];
@@ -8,27 +10,46 @@ const PROGRESS_BAR_FINISH_COLOR = [3, 146, 85];
 const SPINNER = '<div class="lds-roller" style="background: #f5f5f5">' +
     '<div></div><div></div><div></div><div></div>' +
     '<div></div><div></div><div></div><div></div></div>'
-
+const URL = 'ws://centrifugo.astra50.local/connection/websocket'
 
 function SecButton() {
-    const buttonSelector = '#gate-button';
+  const buttonSelector = '#gate-button';
+  const token = document.querySelector('#centrifugo-token').textContent;
 
-    const progressBar = new ProgressBar(buttonSelector, {
-      startColor: PROGRESS_BAR_START_COLOR,
-      middleColor: PROGRESS_BAR_MIDDLE_COLOR,
-      finishColor: PROGRESS_BAR_FINISH_COLOR,
-      size: 180,
-      min: 0,
-      max: 60,
-      onChangePosition: value => gateBtn.message = `${60 - Math.round(value)}c.`
-    })
+  const progressBar = new ProgressBar(buttonSelector, {
+    startColor: PROGRESS_BAR_START_COLOR,
+    middleColor: PROGRESS_BAR_MIDDLE_COLOR,
+    finishColor: PROGRESS_BAR_FINISH_COLOR,
+    size: 180,
+    min: 0,
+    max: 60,
+    onChangePosition: value => gateBtn.setText(`${60 - Math.round(value)}c.`, '0.3em')
+  })
 
-    const gateBtn = new GateButton(buttonSelector, {
-      message: SPINNER,
-      fontSize: '0.2em',
-      size: 170,
-      onClick: () => console.log('Запрос на сервер'),
-    })
+  const gateBtn = new GateButton(buttonSelector, {
+    message: SPINNER,
+    fontSize: '0.2em',
+    size: 170,
+    onClick: () => console.log('Запрос на сервер'),
+  })
+
+  const server = new Server(URL)
+
+  server.onConnect = () => {
+    gateBtn.setText('Ура, есть контакт!', '0.1em')
+  }
+
+  server.onResponse = async data => {
+    const timeRemain = +data.time || 60;
+    await progressBar.stopAnimation();
+    progressBar.animationTime = 1;
+    await (progressBar.setValue(60 - timeRemain));
+    progressBar.animationTime = timeRemain;
+    await progressBar.setValue(60);
+  }
+
+  server.connect(token);
+
 }
 
 export default SecButton;
