@@ -36,6 +36,14 @@ class GateButton {
       this._messageNode.style.fontSize = fontSize;
     }
   }
+
+  activateButton() {
+    this._node.classList.add('is-active');
+  }
+
+  deactivateButton() {
+    this._node.classList.remove('is-active');
+  }
 }
 
 export default GateButton;
