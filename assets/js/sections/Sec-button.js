@@ -3,7 +3,7 @@ import GateButton from '../modules/gate-button/Gate-button';
 import Server from '../modules/server/CentrifugeServer';
 
 import '../../less/helpers/spinners.less'
-import contexts from 'less/lib/less/contexts';
+import Message from '../modules/messager/Message';
 
 const PROGRESS_BAR_START_COLOR = [194, 4, 55];
 const PROGRESS_BAR_MIDDLE_COLOR = [214, 121, 4];
@@ -29,7 +29,7 @@ function getInitData() {
 }
 
 function SecButton() {
-
+  new Message();
   const buttonSelector = '#gate-button';
   const {token, initTimer} = {...getInitData()}
   let lastTimer = 0;
@@ -41,6 +41,7 @@ function SecButton() {
     size: 180,
     min: 0,
     max: 60,
+    start: 60 - initTimer,
     onChangePosition: value => {
       gateBtn.setText(`${60 - Math.round(value)}c.`, '0.3em');
       gateBtn.deactivateButton()

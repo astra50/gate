@@ -42,7 +42,8 @@ class ProgressBar {
     this._onChangePosition = () => defaultOptions.onChangePosition(this.value)
     this._onComplete = () => defaultOptions.onComplete(this.value)
 
-    this._animationTime = 1000
+    this._animationTime = 100;
+    this._value = this._options.start;
     this._changeBarPosition(this._options.start).then(()=> {
       this._isAnimation = false;
       this._isCancelAnimation = false;
@@ -119,7 +120,7 @@ class ProgressBar {
   async _changeBarPosition (newValue) {
     const {min, max} = {...this._options},
         oldValue = this.value;
-    let   steps = (Math.abs(newValue - oldValue)) * 10;
+    let   steps = (Math.abs(newValue - oldValue)) * 10 || 1;
 
     const animation = step => new Promise(resolve => {
       setTimeout(()=> {
