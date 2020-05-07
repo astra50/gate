@@ -1,5 +1,7 @@
 {% extends 'layout.html.twig' %}
 
+{#{% set init_timer = 30 %}#}
+
 {% block body %}
     <div class="site-wrapper">
         <main class="site-main">
@@ -16,7 +18,9 @@
                     </div>
                 </div>
             </section>
-            <div id="centrifugo-token" style="display: none">{{ centrifugo_token }}</div>
+            <div id="init-state" data-init-timer="{{ init_timer | default(0) }}"
+                                 data-token="{{ centrifugo_token }}"
+                 style="display: none"></div>
         </main>
     </div>
 
