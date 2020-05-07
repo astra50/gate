@@ -12,9 +12,25 @@ const SPINNER = '<div class="lds-roller" style="background: #f5f5f5">' +
     '<div></div><div></div><div></div><div></div></div>'
 const API_URL = `${location.protocol === 'http:' ? 'ws' : 'wss'}://${location.host.replace(/gate/, 'centrifugo')}/connection/websocket`
 
+
+function getInitData() {
+  const dataNode = document.querySelector('#init-state');
+  const data = {
+    initTimer: 0,
+    token: ''};
+  let  initData;
+
+  if (dataNode) {
+   initData = {...dataNode.dataset}
+   dataNode.remove();
+  }
+  return Object.assign(data, initData);
+}
+
 function SecButton() {
+
   const buttonSelector = '#gate-button';
-  const token = document.querySelector('#centrifugo-token').textContent;
+  const {token, initTimer} = {...getInitData()}
 
   const progressBar = new ProgressBar(buttonSelector, {
     startColor: PROGRESS_BAR_START_COLOR,
@@ -48,17 +64,21 @@ function SecButton() {
 
   const server = new Server(API_URL)
 
-  server.onConnect = () => {
-    gateBtn.setText('Ура, есть контакт!', '0.13em')
-  }
-
-  server.onResponse = async data => {
-    const timeRemain = +data.time || 60;
+  const changeBarState = async newValue => {
+    const timeRemain = +newValue;
     await progressBar.stopAnimation();
     progressBar.animationTime = 1;
     await (progressBar.setValue(60 - timeRemain));
     progressBar.animationTime = timeRemain;
     await progressBar.setValue(60);
+  }
+
+  server.onConnect = async () => {
+    await changeBarState(initTimer)
+  }
+
+  server.onResponse = async data => {
+    await changeBarState(+data.time || 60)
   }
 
   server.connect(token);
