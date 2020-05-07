@@ -31,7 +31,7 @@ class GateButton {
 
   setText(val, fontSize = '') {
     this._message = val;
-    this._messageNode.textContent = val;
+    this._messageNode.innerHTML = val;
     if (fontSize) {
       this._messageNode.style.fontSize = fontSize;
     }
