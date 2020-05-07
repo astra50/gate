@@ -3,6 +3,7 @@ import GateButton from '../modules/gate-button/Gate-button';
 import Server from '../modules/server/CentrifugeServer';
 
 import '../../less/helpers/spinners.less'
+import contexts from 'less/lib/less/contexts';
 
 const PROGRESS_BAR_START_COLOR = [194, 4, 55];
 const PROGRESS_BAR_MIDDLE_COLOR = [214, 121, 4];
@@ -31,6 +32,7 @@ function SecButton() {
 
   const buttonSelector = '#gate-button';
   const {token, initTimer} = {...getInitData()}
+  let lastTimer = 0;
 
   const progressBar = new ProgressBar(buttonSelector, {
     startColor: PROGRESS_BAR_START_COLOR,
@@ -81,7 +83,20 @@ function SecButton() {
     await changeBarState(+data.time || 60)
   }
 
+  server.onDisconnect = async () => {
+    await progressBar.stopAnimation();
+    lastTimer = 60 - progressBar.value;
+    progressBar.animationTime = 1;
+    await progressBar.setValue(0)
+    gateBtn.setText(SPINNER);
+  }
+
+  server.onReconnect = async () => {
+    await changeBarState(lastTimer)
+  }
+
   server.connect(token);
+
 }
 
 export default SecButton;

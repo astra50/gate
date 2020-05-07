@@ -1,5 +1,7 @@
 class Server {
 
+  isOnceConnect = false;
+
   constructor() {}
 
   connect() { }
@@ -11,6 +13,8 @@ class Server {
   onDisconnect(context) { }
 
   onResponse(context) { }
+
+  onReconnect(context) {}
 
 }
 
