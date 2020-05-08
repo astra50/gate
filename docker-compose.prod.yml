@@ -4,7 +4,7 @@ services:
     nginx:
         image: astra50/gate-nginx:${VERSION}
         networks:
-            - astra50gate
+            - default
             - ingress
         deploy:
             mode: replicated
@@ -26,8 +26,6 @@ services:
 
     php-fpm: &app
         image: astra50/gate-fpm:${VERSION}
-        networks:
-            - astra50gate
         environment:
             CENTRIFUGO_URL: https://centrifugo.astra50.ru/api
         volumes:
@@ -70,8 +68,6 @@ services:
             POSTGRES_DB: db
             POSTGRES_USER: db
             POSTGRES_PASSWORD_FILE: /run/secrets/database_password
-        networks:
-            - astra50gate
         secrets:
             - database_password
         deploy:
@@ -89,8 +85,6 @@ services:
 
     memcached:
         image: memcached:1.6.5-alpine
-        networks:
-            - astra50gate
         healthcheck:
             test: nc -z 127.0.0.1 11211
             interval: 5s
@@ -130,7 +124,7 @@ networks:
     ingress:
         external: true
         name: proxy
-    astra50gate:
+    default:
         driver: overlay
         name: astra50gate
 
