@@ -54,10 +54,6 @@ services:
         image: centrifugo/centrifugo:v2.4
         labels:
             ru.grachevko.dhu: 'centrifugo.astra50.local'
-        networks:
-            default:
-                aliases:
-                    - centrifugo.astra50.local
         environment:
             CENTRIFUGO_PORT: 80
             CENTRIFUGO_ADMIN: 'true'

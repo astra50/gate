@@ -47,7 +47,6 @@ services:
             UISCOM_ID: ${UISCOM_ID}
             UISCOM_SECRET: ${UISCOM_SECRET}
             SENTRY_DSN: ${SENTRY_DSN}
-            CENTRIFUGO_URL: https://centrifugo.astra50.ru/api
         stop_grace_period: 120s
         deploy:
             mode: replicated
@@ -116,10 +115,8 @@ services:
             CENTRIFUGO_ADMIN_PASSWORD: ${CENTRIFUGO_ADMIN_PASSWORD}
             CENTRIFUGO_ADMIN_SECRET: ${CENTRIFUGO_ADMIN_SECRET}
         networks:
-            ingress: {}
-            default:
-                aliases:
-                    - centrifugo.astra50.ru
+            - ingress
+            - default
         deploy:
             mode: replicated
             replicas: 1

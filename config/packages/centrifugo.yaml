@@ -1,11 +1,10 @@
 services:
     phpcent\Client:
         arguments:
-            - '%env(CENTRIFUGO_URL)%'
+            - http://centrifugo/api
             - '%env(CENTRIFUGO_API_KEY)%'
             - '%env(CENTRIFUGO_SECRET)%'
 
 parameters:
-    env(CENTRIFUGO_URL): http://centrifugo.astra50.local/api
     env(CENTRIFUGO_SECRET): admin
     env(CENTRIFUGO_API_KEY): admin
