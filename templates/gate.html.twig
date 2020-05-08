@@ -1,7 +1,5 @@
 {% extends 'layout.html.twig' %}
 
-{#{% set init_timer = 30 %}#}
-
 {% block body %}
     <div class="site-wrapper">
         <main class="site-main">
@@ -19,7 +17,7 @@
                 </div>
             </section>
             <div id="init-state" data-init-timer="{{ gate_remaining_time() }}"
-                                 data-token="{{ centrifugo_token }}"
+                                 data-token="{{ centrifugo_connection_token(app.user.toId) }}"
                  style="display: none"></div>
         </main>
     </div>
