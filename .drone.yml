@@ -262,4 +262,4 @@ volumes:
             path: /var/run/docker.sock
     -   name: env
         host:
-            path: /etc/astra50/gate_env
+            path: /opt/secrets/astra50_gate
