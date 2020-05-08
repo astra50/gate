@@ -46,6 +46,8 @@ class Messenger {
   }
 
   async removeAll() {
+    if (!this._stack.size)
+      await Promise.resolve()
     const promises = [];
     for (let message of this._stack) {
       promises.push(new Promise((resolve => this.removeMessage(message).then(resolve))))

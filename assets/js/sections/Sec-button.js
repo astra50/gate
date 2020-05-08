@@ -4,15 +4,16 @@ import Server from '../modules/server/CentrifugeServer';
 
 import '../../less/helpers/spinners.less'
 import Messenger from '../modules/messager/Messager';
+import {MESSAGES, PROGRESS_BAR_COLORS} from './sec-button-vars';
 
-const PROGRESS_BAR_START_COLOR = [194, 4, 55];
-const PROGRESS_BAR_MIDDLE_COLOR = [214, 121, 4];
-const PROGRESS_BAR_FINISH_COLOR = [3, 146, 85];
 const SPINNER = '<div class="lds-roller" style="background: #f5f5f5">' +
     '<div></div><div></div><div></div><div></div>' +
     '<div></div><div></div><div></div><div></div></div>'
+
 const API_URL = `${location.protocol === 'http:' ? 'ws' : 'wss'}://${location.host.replace(/gate/, 'centrifugo')}/connection/websocket`
+const API_CHANNEL = 'gate'
 const FETCH_URL = location.href
+
 
 function getInitData() {
   const dataNode = document.querySelector('#init-state');
@@ -36,12 +37,10 @@ function SecButton() {
 
   const messenger = new Messenger()
 
-  window.m = messenger;
-
   const progressBar = new ProgressBar(buttonSelector, {
-    startColor: PROGRESS_BAR_START_COLOR,
-    middleColor: PROGRESS_BAR_MIDDLE_COLOR,
-    finishColor: PROGRESS_BAR_FINISH_COLOR,
+    startColor: PROGRESS_BAR_COLORS.start,
+    middleColor: PROGRESS_BAR_COLORS.middle,
+    finishColor: PROGRESS_BAR_COLORS.finish,
     size: 180,
     min: 0,
     max: 60,
@@ -64,17 +63,17 @@ function SecButton() {
       if (progressBar.isFull) {
         const response = await fetch(FETCH_URL)
         if(response.ok) {
-          messenger.createMessage('success', 'Все получилось! Хорошого дня!')
+          messenger.createMessage(MESSAGES.onSend.type, MESSAGES.onSend.message)
         } else {
-          messenger.createMessage('error', 'Похоже что-то сломалось, сообщите в чат СНТ')
+          messenger.createMessage(MESSAGES.onSendError.type, MESSAGES.onSendError.message)
         }
       } else {
-        messenger.createMessage('error', 'Подожди немного, ворота не железные')
+        messenger.createMessage(MESSAGES.onCooldown.type, MESSAGES.onCooldown.message)
       }
     },
   })
 
-  const server = new Server(API_URL)
+  const server = new Server({API_URL, API_CHANNEL})
 
   const changeBarState = async newValue => {
     const timeRemain = +newValue;
@@ -88,26 +87,42 @@ function SecButton() {
   server.onConnect = async () => {
     await messenger.removeAll();
     await changeBarState(initTimer)
-    messenger.createMessage('info', 'Соединение с воротами установлено')
+    if (!server.isOnceConnect)
+      messenger.createMessage(MESSAGES.onConnect.type, MESSAGES.onConnect.message)
   }
-
+  /***
+   *
+   * @param {string} data.open response status
+   * @param {int} data.remaining_time cooldown time
+   * @returns {Promise<void>}
+   */
   server.onResponse = async data => {
-    await changeBarState(+data.time || 60)
-    messenger.createMessage('info', 'Похоже ворота сейчас откроются')
+    switch (data.open) {
+      case 'fail':
+        messenger.createMessage(MESSAGES.onResponseError.type, MESSAGES.onResponseError.message);
+        if (progressBar.isFull) await changeBarState(10);
+        break;
+      case 'success' :
+        messenger.createMessage(MESSAGES.onResponse.type, MESSAGES.onResponse.message)
+        await changeBarState(+data.remaining_time || 60)
+        break;
+      default:
+        messenger.createMessage(MESSAGES.onResponseUnknown.type, MESSAGES.onResponseUnknown.message)
+    }
   }
 
   server.onDisconnect = async () => {
-    messenger.createMessage('error', 'Нет соединения с воротам, пытаюсь найти контакт...', 0)
+    messenger.createMessage(MESSAGES.onDisconnect.type, MESSAGES.onDisconnect.message, 0)
     await progressBar.stopAnimation();
     lastTimer = 60 - progressBar.value;
-    progressBar.animationTime = 1;
+    progressBar.animationTime = 0;
     await progressBar.setValue(0)
     gateBtn.setText(SPINNER);
   }
 
   server.onReconnect = async () => {
     await messenger.removeAll();
-    messenger.createMessage('info', 'Мы снова онлайн! Жми!')
+    messenger.createMessage(MESSAGES.onReconnect.type, MESSAGES.onReconnect.message)
     await changeBarState(lastTimer)
   }
 
