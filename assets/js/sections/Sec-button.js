@@ -75,11 +75,11 @@ function SecButton() {
 
   const server = new Server({API_URL, API_CHANNEL})
 
-  const changeBarState = async newValue => {
+  const changeBarState = async (newValue, animate) => {
     const timeRemain = +newValue;
     await progressBar.stopAnimation();
     progressBar.animationTime = 1;
-    await (progressBar.setValue(60 - timeRemain));
+    await progressBar.setValue(60 - timeRemain, animate);
     progressBar.animationTime = timeRemain;
     await progressBar.setValue(60);
   }
@@ -115,15 +115,15 @@ function SecButton() {
     messenger.createMessage(MESSAGES.onDisconnect.type, MESSAGES.onDisconnect.message, 0)
     await progressBar.stopAnimation();
     lastTimer = 60 - progressBar.value;
-    progressBar.animationTime = 0;
-    await progressBar.setValue(0)
+    progressBar.animationTime = 1;
+    await progressBar.setValue(0, false)
     gateBtn.setText(SPINNER);
   }
 
   server.onReconnect = async () => {
     await messenger.removeAll();
     messenger.createMessage(MESSAGES.onReconnect.type, MESSAGES.onReconnect.message)
-    await changeBarState(lastTimer)
+    await changeBarState(lastTimer, false)
   }
 
   server.connect(token);
