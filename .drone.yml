@@ -223,7 +223,7 @@ steps:
             -   name: docker.sock
                 path: /var/run/docker.sock
         commands:
-            - docker-compose --file docker-compose.prod.yml config | docker stack deploy --prune --with-registry-auth --compose-file - gate
+            - docker-compose --file .swarm.yml config | docker stack deploy --prune --with-registry-auth --compose-file - gate
         environment:
             VERSION: ${DRONE_BUILD_NUMBER}
         when:
