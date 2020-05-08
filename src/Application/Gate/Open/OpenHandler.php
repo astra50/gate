@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Gate\Open;
 
 use App\Domain\Gate\Gate;
+use App\Domain\Gate\GateRemaining;
 use App\Domain\Gate\GateStorage;
 use App\Domain\Gate\OpenFail;
 use App\Domain\Gate\OpenSuccess;
@@ -17,13 +18,16 @@ final class OpenHandler
 {
     private LockFactory $lockFactory;
 
+    private GateRemaining $remaining;
+
     private Gate $gate;
 
     private GateStorage $storage;
 
-    public function __construct(LockFactory $lockFactory, Gate $gate, GateStorage $storage)
+    public function __construct(LockFactory $lockFactory, GateRemaining $remaining, Gate $gate, GateStorage $storage)
     {
         $this->lockFactory = $lockFactory;
+        $this->remaining = $remaining;
         $this->gate = $gate;
         $this->storage = $storage;
     }
@@ -38,6 +42,20 @@ final class OpenHandler
                     $command->requestId,
                     [
                         'message' => sprintf('%s already locked.', __CLASS__),
+                    ]
+                )
+            );
+
+            return;
+        }
+
+        $remainingTime = $this->remaining->getRemainingTime();
+        if (0 !== $remainingTime) {
+            $this->storage->addFail(
+                new OpenFail(
+                    $command->requestId,
+                    [
+                        'message' => 'Gate blocked due to positive remaining time',
                     ]
                 )
             );

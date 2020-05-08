@@ -18,7 +18,7 @@
                     </div>
                 </div>
             </section>
-            <div id="init-state" data-init-timer="{{ init_timer | default(0) }}"
+            <div id="init-state" data-init-timer="{{ gate_remaining_time() }}"
                                  data-token="{{ centrifugo_token }}"
                  style="display: none"></div>
         </main>
