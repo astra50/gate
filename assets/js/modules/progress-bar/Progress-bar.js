@@ -117,10 +117,11 @@ class ProgressBar {
     return colorForSet;
   }
 
-  async _changeBarPosition (newValue) {
+  async _changeBarPosition (newValue, animate=true) {
     const {min, max} = {...this._options},
-        oldValue = this.value;
-    let   steps = (Math.abs(newValue - oldValue)) * 10 || 1;
+          oldValue = animate ? this.value : newValue;
+
+    let steps = (Math.abs(newValue - oldValue)) * 10 || 1;
 
     const animation = step => new Promise(resolve => {
       setTimeout(()=> {
