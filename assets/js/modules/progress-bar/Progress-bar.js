@@ -139,7 +139,7 @@ class ProgressBar {
         if (this.isFull) {
           this._onComplete(this.value)
         }
-        console.log(this.isEmpty, this._options.colorThenMin)
+
         if (this.isEmpty && this._options.colorThenMin) {
           const colorForSet = this._options.startColor;
           this._node.style.backgroundColor = `rgba(${colorForSet.join(', ')})`;
