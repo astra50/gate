@@ -5,6 +5,8 @@
   overflow: hidden;
 
   &__front {
+    position: fixed;
+    top: 0;
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
@@ -16,7 +18,7 @@
   }
 
   &__back {
-    background: url("@{img-dir}backgrounds/background.jpg") no-repeat center fixed;
+    background: url("@{img-dir}backgrounds/background.jpg") no-repeat center;
     position: absolute;
     top: 0;
     left: 0;

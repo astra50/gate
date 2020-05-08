@@ -61,7 +61,7 @@ function SecButton() {
     size: 170,
     onClick: async () => {
       if (progressBar.isFull) {
-        const response = await fetch(FETCH_URL)
+        const response = await fetch(FETCH_URL, {method: 'POST'})
         if(response.ok) {
           messenger.createMessage(MESSAGES.onSend.type, MESSAGES.onSend.message)
         } else {

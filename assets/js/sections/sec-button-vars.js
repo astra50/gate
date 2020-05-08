@@ -5,7 +5,7 @@ export const MESSAGES = {
   },
   onDisconnect: {
     type: 'error',
-    message: 'Нет соединения с воротам, пытаюсь найти контакт...'
+    message: 'Какие-то проблемы с Интернетом, пытаюсь найти контакт...'
   },
   onReconnect: {
     type: 'info',
@@ -13,11 +13,11 @@ export const MESSAGES = {
   },
   onSend: {
     type: 'success',
-    message: 'Все получилось! Хорошого дня!'
+    message: 'Все получилось! Хорошего дня!'
   },
   onSendError: {
     type: 'error',
-    message: 'Похоже что-то сломалось, сообщите в чат СНТ'
+    message: 'Похоже что-то сломалось, сообщи в чат СНТ'
   },
   onResponse: {
     type: 'info',
@@ -25,15 +25,15 @@ export const MESSAGES = {
   },
   onResponseError: {
     type: 'error',
-    message: 'Что-то пошло не так, сообщите в чат СНТ'
+    message: 'Что-то пошло не так, сообщи в чат СНТ'
   },
   onResponseUnknown: {
     type: 'info',
-    message: 'Кто другой что-то нажал'
+    message: 'Кто-то другой что-то нажал'
   },
   onCooldown: {
     type: 'error',
-    message: 'Подожди немного, ворота не железные'
+    message: 'Подожди немного, ворота не казенные'
   },
 }
 
