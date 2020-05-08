@@ -27,11 +27,27 @@ services:
     php-fpm: &app
         image: astra50/gate-fpm:${VERSION}
         environment:
+            APP_SECRET: ${APP_SECRET}
+            DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+            VKONTAKTE_ID: ${VKONTAKTE_ID}
+            VKONTAKTE_SECRET: ${VKONTAKTE_SECRET}
+            YANDEX_ID: ${YANDEX_ID}
+            YANDEX_SECRET: ${YANDEX_SECRET}
+            GOOGLE_ID: ${GOOGLE_ID}
+            GOOGLE_SECRET: ${GOOGLE_SECRET}
+            INSTAGRAM_ID: ${INSTAGRAM_ID}
+            INSTAGRAM_SECRET: ${INSTAGRAM_SECRET}
+            MAILRU_ID: ${MAILRU_ID}
+            MAILRU_PRIVATE: ${MAILRU_PRIVATE}
+            MAILRU_SECRET: ${MAILRU_SECRET}
+            CENTRIFUGO_SECRET: ${CENTRIFUGO_SECRET}
+            CENTRIFUGO_API_KEY: ${CENTRIFUGO_API_KEY}
+            CENTRIFUGO_ADMIN_PASSWORD: ${CENTRIFUGO_ADMIN_PASSWORD}
+            CENTRIFUGO_ADMIN_SECRET: ${CENTRIFUGO_ADMIN_SECRET}
+            UISCOM_ID: ${UISCOM_ID}
+            UISCOM_SECRET: ${UISCOM_SECRET}
+            SENTRY_DSN: ${SENTRY_DSN}
             CENTRIFUGO_URL: https://centrifugo.astra50.ru/api
-        volumes:
-            - /etc/astra50/gate_env:/usr/local/app/.env:ro
-        secrets:
-            - database_password
         stop_grace_period: 120s
         deploy:
             mode: replicated
@@ -67,9 +83,7 @@ services:
         environment:
             POSTGRES_DB: db
             POSTGRES_USER: db
-            POSTGRES_PASSWORD_FILE: /run/secrets/database_password
-        secrets:
-            - database_password
+            POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
         deploy:
             mode: global
             update_config:
@@ -130,8 +144,3 @@ networks:
     default:
         driver: overlay
         name: astra50gate
-
-secrets:
-    database_password:
-        external: true
-        name: astra50gate_database_password
