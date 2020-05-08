@@ -1,20 +1,21 @@
 import Server from './Server';
 import Centrifuge from 'centrifuge';
 
-const CHANNEL = "button"
 
 class CentrifugeServer extends Server {
 
-  constructor(url) {
+  constructor(options) {
     super();
-    this._connection = new Centrifuge(url, {debug: true})
+    this._options = {...options}
+    this._connection = new Centrifuge(this._options.API_URL, {debug: false})
     this._connection.on('disconnect', (context)=> this.onDisconnect(context))
   }
 
   connect(token) {
     this._connection.setToken(token);
     this._connection.connect()
-    this._subscribtion = this._connection.subscribe(CHANNEL)
+
+    this._subscribtion = this._connection.subscribe(this._options.API_CHANNEL)
     this._subscribtion.on('subscribe', (context) => {
       if (this.isOnceConnect) {
         this.onReconnect(context)
