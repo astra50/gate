@@ -12,7 +12,7 @@ const SPINNER = '<div class="lds-roller" style="background: #f5f5f5">' +
     '<div></div><div></div><div></div><div></div>' +
     '<div></div><div></div><div></div><div></div></div>'
 const API_URL = `${location.protocol === 'http:' ? 'ws' : 'wss'}://${location.host.replace(/gate/, 'centrifugo')}/connection/websocket`
-
+const FETCH_URL = location.href
 
 function getInitData() {
   const dataNode = document.querySelector('#init-state');
@@ -60,11 +60,16 @@ function SecButton() {
     message: SPINNER,
     fontSize: '0.2em',
     size: 170,
-    onClick: () => {
+    onClick: async () => {
       if (progressBar.isFull) {
-        console.log('Запрос на сервер');
+        const response = await fetch(FETCH_URL)
+        if(response.ok) {
+          messenger.createMessage('success', 'Все получилось! Хорошого дня!')
+        } else {
+          messenger.createMessage('error', 'Похоже что-то сломалось, сообщите в чат СНТ')
+        }
       } else {
-        console.log('Не готово');
+        messenger.createMessage('error', 'Подожди немного, ворота не железные')
       }
     },
   })
@@ -82,13 +87,16 @@ function SecButton() {
 
   server.onConnect = async () => {
     await changeBarState(initTimer)
+    messenger.createMessage('info', 'Соединение с воротами установлено')
   }
 
   server.onResponse = async data => {
     await changeBarState(+data.time || 60)
+    messenger.createMessage('info', 'Похоже ворота сейчас откроются')
   }
 
   server.onDisconnect = async () => {
+    messenger.createMessage('error', 'Нет соединения с воротам, пытаюсь найти контакт...', 0)
     await progressBar.stopAnimation();
     lastTimer = 60 - progressBar.value;
     progressBar.animationTime = 1;
@@ -97,6 +105,8 @@ function SecButton() {
   }
 
   server.onReconnect = async () => {
+    await messenger.removeAll();
+    messenger.createMessage('info', 'Мы снова онлайн! Жми!')
     await changeBarState(lastTimer)
   }
 
