@@ -17,8 +17,8 @@ class ProgressBar {
       finishColor: [0, 128, 0],
       size: 200,
       animationTime: 1000,
-      onChangePosition: (value) => {},
-      onComplete: (value) => {},
+      onChangePosition: () => {},
+      onComplete: () => {},
     };
 
     this._options = Object.assign(defaultOptions, option)
@@ -62,8 +62,6 @@ class ProgressBar {
   get isFull() {
     return this.value === this._options.max
   }
-
-  set isActive(val) { }
 
   async setValue(val) {
     const {max, min} = {...this._options}
