@@ -5,6 +5,9 @@
     "amphp/byte-stream": {
         "version": "v1.7.3"
     },
+    "beberlei/assert": {
+        "version": "v3.2.7"
+    },
     "brianium/habitat": {
         "version": "v1.0.0"
     },
@@ -426,6 +429,15 @@
             "config/packages/security_checker.yaml"
         ]
     },
+    "simple-bus/doctrine-orm-bridge": {
+        "version": "v5.1.0"
+    },
+    "simple-bus/message-bus": {
+        "version": "v3.1.0"
+    },
+    "simple-bus/symfony-bridge": {
+        "version": "v5.4.0"
+    },
     "symfony/asset": {
         "version": "v5.0.8"
     },
@@ -642,6 +654,9 @@
         "version": "v5.0.8"
     },
     "symfony/property-info": {
+        "version": "v5.0.8"
+    },
+    "symfony/proxy-manager-bridge": {
         "version": "v5.0.8"
     },
     "symfony/requirements-checker": {
