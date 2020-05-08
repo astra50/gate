@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Ports\Messages\Gate;
 
 use App\Domain\Gate\Event\GateOpenFailed;
-use phpcent\Client as Centrifugo;
+use App\Infrastructure\Centrifugo\Centrifugo;
 
 final class OpenFailedListener
 {

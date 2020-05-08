@@ -6,7 +6,7 @@ namespace App\Ports\Controller;
 
 use App\Application\Gate\Request\OpenRequestCommand;
 use App\Domain\User\User;
-use phpcent\Client as Centrifugo;
+use App\Infrastructure\Centrifugo\Centrifugo;
 use SimpleBus\SymfonyBridge\Bus\CommandBus;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -41,7 +41,7 @@ final class GateAction extends AbstractController
         }
 
         return $this->render('gate.html.twig', [
-            'centrifugo_token' => $this->centrifugo->generateConnectionToken($user->toId()->toString()),
+            'centrifugo_token' => $this->centrifugo->generateConnectionToken($user->toId()),
         ]);
     }
 }
