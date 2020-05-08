@@ -9,6 +9,7 @@ framework:
         handler_id: session.handler.memcached
         cookie_secure: auto
         cookie_samesite: lax
+        cookie_lifetime: 2678400 # month
 
     #esi: true
     #fragments: true
