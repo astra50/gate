@@ -4,6 +4,7 @@ namespace App\Tests;
 
 use App\Domain\User\UserStorage;
 use App\Infrastructure\Fixtures\UserFixtures;
+use Generator;
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 use function serialize;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -13,26 +14,43 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class SmokeTest extends WebTestCase
 {
-    public function testGet(): void
+    /**
+     * @dataProvider anonUrls
+     */
+    public function testAnon(string $url, string $method, int $statusCode): void
     {
         $client = static::createClient();
-        $this->logIn($client);
 
-        $client->request('GET', '/');
+        $client->request($method, $url);
         $response = $client->getResponse();
 
-        static::assertSame(200, $response->getStatusCode());
+        static::assertSame($statusCode, $response->getStatusCode());
     }
 
-    public function testPost(): void
+    public function anonUrls(): Generator
+    {
+        yield ['/login/', 'GET', 200];
+        yield ['/', 'GET', 302];
+    }
+
+    /**
+     * @dataProvider loggedUrls
+     */
+    public function testLoggedIn(string $url, string $method, int $statusCode): void
     {
         $client = static::createClient();
         $this->logIn($client);
 
-        $client->request('POST', '/');
+        $client->request($method, $url);
         $response = $client->getResponse();
 
-        static::assertSame(200, $response->getStatusCode());
+        static::assertSame($statusCode, $response->getStatusCode());
+    }
+
+    public function loggedUrls(): Generator
+    {
+        yield ['/', 'GET', 200];
+        yield ['/', 'POST', 200];
     }
 
     private function logIn(KernelBrowser $client): void
