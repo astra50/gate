@@ -30,7 +30,7 @@ final class UiscomGate implements Gate
     public function open(OpenRequestId $requestId): void
     {
         $this->httpClient->request('POST', '', [
-            'timeout' => 5,
+            'timeout' => 2.5,
             'json' => [
                 'jsonrpc' => '2.0',
                 'id' => $requestId->toString(),
