@@ -17,6 +17,7 @@ class ProgressBar {
       finishColor: [0, 128, 0],
       size: 200,
       animationTime: 1000,
+      colorThenMin: true,
       onChangePosition: () => {},
       onComplete: () => {},
     };
@@ -63,7 +64,11 @@ class ProgressBar {
     return this.value === this._options.max
   }
 
-  async setValue(val) {
+  get isEmpty() {
+    return this.value === this._options.min
+  }
+
+  async setValue(val, animation=true) {
     const {max, min} = {...this._options}
     val = val > max ? max : val;
     val = val < min ? min : val;
@@ -73,7 +78,7 @@ class ProgressBar {
       return;
     }
 
-    await this._changeBarPosition(val)
+    await this._changeBarPosition(val, animation)
     this._isAnimation = false;
     this._isCancelAnimation = false;
   }
@@ -115,11 +120,11 @@ class ProgressBar {
     return colorForSet;
   }
 
-  async _changeBarPosition (newValue, animate=true) {
+  async _changeBarPosition (newValue, animate) {
     const {min, max} = {...this._options},
           oldValue = animate ? this.value : newValue;
 
-    let steps = (Math.abs(newValue - oldValue)) * 10 || 1;
+    let steps = (Math.abs(newValue - oldValue)) * 5 || 1;
 
     const animation = step => new Promise(resolve => {
       setTimeout(()=> {
@@ -130,10 +135,17 @@ class ProgressBar {
         this._changeColor(stepValue)
         this._onChangePosition();
         this._value = stepValue;
+
         if (this.isFull) {
           this._onComplete(this.value)
         }
-
+        console.log(this.isEmpty, this._options.colorThenMin)
+        if (this.isEmpty && this._options.colorThenMin) {
+          const colorForSet = this._options.startColor;
+          this._node.style.backgroundColor = `rgba(${colorForSet.join(', ')})`;
+        } else {
+          this._node.style.backgroundColor = ""
+        }
         resolve();
       }, this._animationTime/steps)
     })
