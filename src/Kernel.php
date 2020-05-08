@@ -2,11 +2,13 @@
 
 namespace App;
 
+use App\Infrastructure\SimpleBus\TagsCompilerPass;
 use function dirname;
 use const PHP_VERSION_ID;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
@@ -36,6 +38,14 @@ class Kernel extends BaseKernel
     public function getProjectDir(): string
     {
         return dirname(__DIR__);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function build(ContainerBuilder $container): void
+    {
+        $container->addCompilerPass(new TagsCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 15);
     }
 
     /**
