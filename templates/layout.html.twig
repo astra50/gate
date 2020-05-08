@@ -21,6 +21,10 @@
     <!-- Styles ================================================================================== -->
     <link rel="stylesheet" href="{{ asset('styles.css') }}"/><!-- Main styles from .less -->
 
+    <script src="https://browser.sentry-cdn.com/5.5.0/bundle.min.js" crossorigin="anonymous"></script>
+    <script>
+      Sentry.init({ dsn: 'https://eb090484615d4e3189a2fae889681e07@sentry.automagistre.ru/5' });
+    </script>
 </head>
 <body>
     {% block body %}
