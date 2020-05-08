@@ -3,7 +3,7 @@ import GateButton from '../modules/gate-button/Gate-button';
 import Server from '../modules/server/CentrifugeServer';
 
 import '../../less/helpers/spinners.less'
-import Message from '../modules/messager/Message';
+import Messenger from '../modules/messager/Messager';
 
 const PROGRESS_BAR_START_COLOR = [194, 4, 55];
 const PROGRESS_BAR_MIDDLE_COLOR = [214, 121, 4];
@@ -29,10 +29,14 @@ function getInitData() {
 }
 
 function SecButton() {
-  new Message();
+
   const buttonSelector = '#gate-button';
   const {token, initTimer} = {...getInitData()}
   let lastTimer = 0;
+
+  const messenger = new Messenger()
+
+  window.m = messenger;
 
   const progressBar = new ProgressBar(buttonSelector, {
     startColor: PROGRESS_BAR_START_COLOR,
