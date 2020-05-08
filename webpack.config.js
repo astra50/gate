@@ -15,6 +15,9 @@ const PATHS = {
     assets: 'assets/'
 };
 
+const isProd = NODE_ENV !== "development"
+const isDev = !isProd
+
 module.exports = {
     mode: NODE_ENV,
     entry: {
@@ -38,7 +41,7 @@ module.exports = {
                 terserOptions: {
                     extractComments: 'all',
                     compress: {
-                        drop_console: false,
+                        drop_console: isProd,
                     },
                 },
             })
