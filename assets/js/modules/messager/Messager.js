@@ -18,7 +18,7 @@ class Messenger {
     document.body.append(this._node);
   }
 
-  createMessage(type, text, timeout=this._options.timeout) {
+  createMessage(type, text, timeout=this._options.timeout, isShow=true) {
     let newMessage;
     switch (type) {
       case 'success':
@@ -32,9 +32,8 @@ class Messenger {
     }
 
     this._stack.add(newMessage);
-    if (timeout) {
-      setTimeout(()=> this.removeMessage(newMessage), timeout)
-    }
+    if (timeout) setTimeout(()=> this.removeMessage(newMessage), timeout);
+    if (isShow) newMessage.show().then();
     return newMessage;
   }
 
