@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Ports\Controller;
 
+use App\Application\Gate\Request\OpenRequestCommand;
 use App\Domain\User\User;
 use phpcent\Client as Centrifugo;
+use SimpleBus\SymfonyBridge\Bus\CommandBus;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,9 +20,12 @@ final class GateAction extends AbstractController
 {
     private Centrifugo $centrifugo;
 
-    public function __construct(Centrifugo $centrifugo)
+    private CommandBus $commandBus;
+
+    public function __construct(Centrifugo $centrifugo, CommandBus $commandBus)
     {
         $this->centrifugo = $centrifugo;
+        $this->commandBus = $commandBus;
     }
 
     public function __invoke(Request $request): Response
@@ -28,6 +33,10 @@ final class GateAction extends AbstractController
         $user = $this->getUser();
 
         if ($request->isMethod('POST')) {
+            $this->commandBus->handle(
+                new OpenRequestCommand($user->toId()),
+            );
+
             return new JsonResponse();
         }
 
