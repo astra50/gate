@@ -1,0 +1,7 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\Infrastructure\Centrifugo\StubCentrifugo: ~
+    App\Infrastructure\Centrifugo\Centrifugo: '@App\Infrastructure\Centrifugo\StubCentrifugo'
