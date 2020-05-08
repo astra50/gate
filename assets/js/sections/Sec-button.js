@@ -86,6 +86,7 @@ function SecButton() {
   }
 
   server.onConnect = async () => {
+    await messenger.removeAll();
     await changeBarState(initTimer)
     messenger.createMessage('info', 'Соединение с воротами установлено')
   }
