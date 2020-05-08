@@ -162,6 +162,9 @@
     "guzzlehttp/psr7": {
         "version": "1.6.1"
     },
+    "http-interop/http-factory-guzzle": {
+        "version": "1.0.0"
+    },
     "hwi/oauth-bundle": {
         "version": "0.6",
         "recipe": {
@@ -177,6 +180,9 @@
     },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
+    },
+    "jean85/pretty-package-versions": {
+        "version": "1.2"
     },
     "laminas/laminas-code": {
         "version": "3.4.1"
@@ -429,6 +435,24 @@
             "config/packages/security_checker.yaml"
         ]
     },
+    "sentry/sdk": {
+        "version": "2.1.0"
+    },
+    "sentry/sentry": {
+        "version": "2.3.2"
+    },
+    "sentry/sentry-symfony": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "9746f0823302d7980e5273ef7a69ef3f5ac80914"
+        },
+        "files": [
+            "config/packages/sentry.yaml"
+        ]
+    },
     "simple-bus/doctrine-orm-bridge": {
         "version": "v5.1.0"
     },
@@ -645,6 +669,9 @@
         "version": "v1.15.0"
     },
     "symfony/polyfill-php73": {
+        "version": "v1.15.0"
+    },
+    "symfony/polyfill-uuid": {
         "version": "v1.15.0"
     },
     "symfony/process": {

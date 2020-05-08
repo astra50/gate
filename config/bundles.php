@@ -6,6 +6,7 @@ return [
     Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle::class => ['all' => true],
     HWI\Bundle\OAuthBundle\HWIOAuthBundle::class => ['all' => true],
     Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle::class => ['all' => true],
+    Sentry\SentryBundle\SentryBundle::class => ['all' => true],
     SimpleBus\SymfonyBridge\DoctrineOrmBridgeBundle::class => ['all' => true],
     SimpleBus\SymfonyBridge\SimpleBusCommandBusBundle::class => ['all' => true],
     SimpleBus\SymfonyBridge\SimpleBusEventBusBundle::class => ['all' => true],
