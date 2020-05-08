@@ -1,0 +1,7 @@
+command_bus:
+    middlewares:
+        finishes_command_before_handling_next: true
+        logger: true
+
+event_bus:
+    logging: true

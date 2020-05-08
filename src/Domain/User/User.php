@@ -6,8 +6,6 @@ namespace App\Domain\User;
 
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 use Serializable;
 use function serialize;
 use Symfony\Component\Security\Core\User\EquatableInterface;
@@ -23,9 +21,9 @@ class User implements UserInterface, EquatableInterface, Serializable
 {
     /**
      * @ORM\Id()
-     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\Column(type="user_id", unique=true)
      */
-    private UuidInterface $id;
+    private UserId $id;
 
     /**
      * @Assert\Email
@@ -47,13 +45,13 @@ class User implements UserInterface, EquatableInterface, Serializable
 
     public function __construct(string $username, array $roles)
     {
-        $this->id = Uuid::uuid6();
+        $this->id = UserId::generate();
         $this->roles = $roles;
         $this->username = $username;
         $this->createdAt = new DateTimeImmutable();
     }
 
-    public function toId(): UuidInterface
+    public function toId(): UserId
     {
         return $this->id;
     }
