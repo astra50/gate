@@ -100,6 +100,9 @@ schema-update:
 test: APP_ENV=test
 test: APP_DEBUG=1
 test: php-cs-fixer cache phpstan psalm doctrine-ensure-production-settings database migration-validate fixtures paratest ## Run all checks and tests
+test-without-linters: APP_ENV=test
+test-without-linters: APP_DEBUG=1
+test-without-linters: cache database migration-validate fixtures paratest ## Run tests without static analyze tools
 
 php-cs-fixer: ### Fix coding style
 	$(APP) sh -c 'php-cs-fixer fix $(if $(DRY),--dry-run) $(if $(DEBUG),-vvv); $(PERMISSIONS)'
