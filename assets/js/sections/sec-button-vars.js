@@ -1,18 +1,18 @@
 export const MESSAGES = {
   onConnect: {
-    type: 'info',
+    type: 'debug',
     message: 'Соединение с воротами установлено'
   },
   onDisconnect: {
     type: 'error',
-    message: 'Какие-то проблемы с Интернетом, пытаюсь найти контакт...'
+    message: 'Восстанавливаю связь с воротам...'
   },
   onReconnect: {
     type: 'info',
     message: 'Мы снова на связи! Жми!'
   },
   onSend: {
-    type: 'success',
+    type: 'debug',
     message: 'Все получилось! Хорошего дня!'
   },
   onSendError: {
@@ -20,8 +20,8 @@ export const MESSAGES = {
     message: 'Похоже что-то сломалось, сообщи в чат СНТ'
   },
   onResponse: {
-    type: 'info',
-    message: 'Похоже ворота сейчас откроются'
+    type: 'success',
+    message: 'Ворота скоро откроются! Хорошего дня'
   },
   onResponseError: {
     type: 'error',
@@ -32,7 +32,7 @@ export const MESSAGES = {
     message: 'Кто-то другой что-то нажал'
   },
   onCooldown: {
-    type: 'error',
+    type: 'warning',
     message: 'Подожди немного, ворота не казенные'
   },
 }

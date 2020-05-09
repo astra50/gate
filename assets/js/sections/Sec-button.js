@@ -35,7 +35,10 @@ function SecButton() {
   const {token, initTimer} = {...getInitData()}
   let lastTimer = 0;
 
-  const messenger = new Messenger()
+  const messenger = new Messenger({
+    timeout: 10000,
+    debug: true
+  })
 
   const progressBar = new ProgressBar(buttonSelector, {
     startColor: PROGRESS_BAR_COLORS.start,
@@ -46,7 +49,7 @@ function SecButton() {
     max: 60,
     start: 60 - initTimer,
     onChangePosition: value => {
-      gateBtn.setText(`${60 - Math.round(value)}c.`, '0.3em');
+      gateBtn.setText(`${60 - Math.round(value)}`, '0.3em');
       gateBtn.deactivateButton()
     },
     onComplete: () => {
@@ -61,11 +64,14 @@ function SecButton() {
     size: 170,
     onClick: async () => {
       if (progressBar.isFull) {
+        gateBtn.setText(SPINNER)
         const response = await fetch(FETCH_URL, {method: 'POST'})
         if(response.ok) {
+          gateBtn.setText("OK", '0.3em')
           messenger.createMessage(MESSAGES.onSend.type, MESSAGES.onSend.message)
         } else {
           messenger.createMessage(MESSAGES.onSendError.type, MESSAGES.onSendError.message)
+          await changeBarState(50, false)
         }
       } else {
         messenger.createMessage(MESSAGES.onCooldown.type, MESSAGES.onCooldown.message)
@@ -75,7 +81,7 @@ function SecButton() {
 
   const server = new Server({API_URL, API_CHANNEL})
 
-  const changeBarState = async (newValue, animate) => {
+  const changeBarState = async (newValue, animate=true) => {
     const timeRemain = +newValue;
     await progressBar.stopAnimation();
     progressBar.animationTime = 1;
