@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Ports\Controller;
 
 use App\Application\Gate\Request\OpenRequestCommand;
+use App\Domain\Gate\GateRemaining;
 use App\Domain\User\User;
 use SimpleBus\SymfonyBridge\Bus\CommandBus;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,14 +20,23 @@ final class GateAction extends AbstractController
 {
     private CommandBus $commandBus;
 
-    public function __construct(CommandBus $commandBus)
+    private GateRemaining $remaining;
+
+    public function __construct(CommandBus $commandBus, GateRemaining $remaining)
     {
         $this->commandBus = $commandBus;
+        $this->remaining = $remaining;
     }
 
     public function __invoke(Request $request): Response
     {
         $user = $this->getUser();
+
+        if ($request->isXmlHttpRequest()) {
+            return new JsonResponse([
+                'remaining_time' => $this->remaining->getRemainingTime(),
+            ]);
+        }
 
         if ($request->isMethod('POST')) {
             $this->commandBus->handle(

@@ -53,6 +53,25 @@ final class SmokeTest extends WebTestCase
         yield ['/', 'POST', 200];
     }
 
+    /**
+     * @dataProvider ajaxUrls
+     */
+    public function testAjax(string $url, string $method, int $statusCode): void
+    {
+        $client = static::createClient();
+        $this->logIn($client);
+
+        $client->xmlHttpRequest($method, $url);
+        $response = $client->getResponse();
+
+        static::assertSame($statusCode, $response->getStatusCode());
+    }
+
+    public function ajaxUrls(): Generator
+    {
+        yield ['/', 'GET', 200];
+    }
+
     private function logIn(KernelBrowser $client): void
     {
         /** @var SessionInterface $session */
