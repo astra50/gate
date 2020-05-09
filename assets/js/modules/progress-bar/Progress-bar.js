@@ -150,7 +150,7 @@ class ProgressBar {
 
     this._isAnimation = true;
     for (let i = 1; i <= steps; i++) {
-      if (this._isCancelAnimation) return Promise.resolve();
+      if (this._isCancelAnimation) break;
       await animation(i);
     }
     this._isAnimation = false;
