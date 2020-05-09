@@ -46,7 +46,6 @@ class ProgressBar {
     this._animationTime = 100;
     this._value = this._options.start;
     this._changeBarPosition(this._options.start).then(()=> {
-      this._isAnimation = false;
       this._isCancelAnimation = false;
       this._animationTime = this._options.animationTime;
     })
@@ -79,7 +78,6 @@ class ProgressBar {
     }
 
     await this._changeBarPosition(val, animation)
-    this._isAnimation = false;
     this._isCancelAnimation = false;
   }
 
@@ -155,6 +153,7 @@ class ProgressBar {
       if (this._isCancelAnimation) return Promise.resolve();
       await animation(i);
     }
+    this._isAnimation = false;
   }
 }
 
