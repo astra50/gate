@@ -1,4 +1,10 @@
-import {ErrorMessage, InfoMessage, SuccessMessage} from './Message';
+import {
+  DebugMessage,
+  ErrorMessage,
+  InfoMessage,
+  SuccessMessage,
+  WarningMessage,
+} from './Message';
 
 class Messenger {
 
@@ -7,6 +13,7 @@ class Messenger {
   constructor(userOptions={}) {
     const options = {
       timeout: 5000,
+      debug: false
     }
     this._options = {...options, ...userOptions};
     const wrapper = document.createElement('div');
@@ -26,6 +33,13 @@ class Messenger {
         break;
       case 'error':
         newMessage = new ErrorMessage(text, this._node.firstElementChild);
+        break;
+      case 'warning':
+        newMessage = new WarningMessage(text, this._node.firstElementChild);
+        break;
+      case 'debug':
+        if (!this._options.debug) return undefined;
+        newMessage = new DebugMessage(text, this._node.firstElementChild);
         break;
       default:
         newMessage = new InfoMessage(text, this._node.firstElementChild);

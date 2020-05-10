@@ -5,6 +5,8 @@ import Server from '../modules/server/CentrifugeServer';
 import '../../less/helpers/spinners.less'
 import Messenger from '../modules/messager/Messager';
 import {MESSAGES, PROGRESS_BAR_COLORS} from './sec-button-vars';
+import BackgroundSupervisor
+  from '../modules/background-supervisor/BackgroundSupervisor';
 
 const SPINNER = '<div class="lds-roller" style="background: #f5f5f5">' +
     '<div></div><div></div><div></div><div></div>' +
@@ -12,8 +14,8 @@ const SPINNER = '<div class="lds-roller" style="background: #f5f5f5">' +
 
 const API_URL = `${location.protocol === 'http:' ? 'ws' : 'wss'}://${location.host.replace(/gate/, 'centrifugo')}/connection/websocket`
 const API_CHANNEL = 'gate'
-const FETCH_URL = location.href
-
+const SEND_FETCH_URL = location.href
+const UPDATE_FETCH_URL = location.href
 
 function getInitData() {
   const dataNode = document.querySelector('#init-state');
@@ -33,9 +35,12 @@ function SecButton() {
 
   const buttonSelector = '#gate-button';
   const {token, initTimer} = {...getInitData()}
-  let lastTimer = 0;
+  let isConnected = false;
 
-  const messenger = new Messenger()
+  const messenger = new Messenger({
+    timeout: 10000,
+    debug: false
+  })
 
   const progressBar = new ProgressBar(buttonSelector, {
     startColor: PROGRESS_BAR_COLORS.start,
@@ -46,7 +51,7 @@ function SecButton() {
     max: 60,
     start: 60 - initTimer,
     onChangePosition: value => {
-      gateBtn.setText(`${60 - Math.round(value)}c.`, '0.3em');
+      gateBtn.setText(`${60 - Math.round(value)}`, '0.3em');
       gateBtn.deactivateButton()
     },
     onComplete: () => {
@@ -61,11 +66,14 @@ function SecButton() {
     size: 170,
     onClick: async () => {
       if (progressBar.isFull) {
-        const response = await fetch(FETCH_URL, {method: 'POST'})
+        gateBtn.setText(SPINNER)
+        const response = await fetch(SEND_FETCH_URL, {method: 'POST'})
         if(response.ok) {
+          gateBtn.setText("OK", '0.3em')
           messenger.createMessage(MESSAGES.onSend.type, MESSAGES.onSend.message)
         } else {
           messenger.createMessage(MESSAGES.onSendError.type, MESSAGES.onSendError.message)
+          await changeBarState(50, false)
         }
       } else {
         messenger.createMessage(MESSAGES.onCooldown.type, MESSAGES.onCooldown.message)
@@ -73,9 +81,9 @@ function SecButton() {
     },
   })
 
-  const server = new Server({API_URL, API_CHANNEL})
+  const server = new Server({API_URL, API_CHANNEL, token})
 
-  const changeBarState = async (newValue, animate) => {
+  const changeBarState = async (newValue, animate=true) => {
     const timeRemain = +newValue;
     await progressBar.stopAnimation();
     progressBar.animationTime = 1;
@@ -84,7 +92,24 @@ function SecButton() {
     await progressBar.setValue(60);
   }
 
+  const syncState = async () => {
+    let serverTimeRemaining;
+    try {
+      serverTimeRemaining = await updateGateStatus();
+    } catch (e) {
+      messenger.createMessage(MESSAGES.onSupervisorError.type, MESSAGES.onSupervisorError.message + e)
+      return
+    }
+    let localTimeRemaining = 60 - progressBar.value
+    if (Math.abs(serverTimeRemaining - localTimeRemaining) > 2) {
+      console.log("sync complete", localTimeRemaining , '=>', serverTimeRemaining)
+      await changeBarState(+serverTimeRemaining)
+    }
+
+  }
+
   server.onConnect = async () => {
+    isConnected = true;
     await messenger.removeAll();
     await changeBarState(initTimer)
     if (!server.isOnceConnect)
@@ -99,12 +124,12 @@ function SecButton() {
   server.onResponse = async data => {
     switch (data.open) {
       case 'fail':
-        messenger.createMessage(MESSAGES.onResponseError.type, MESSAGES.onResponseError.message);
         if (progressBar.isFull) await changeBarState(10);
+        messenger.createMessage(MESSAGES.onResponseError.type, MESSAGES.onResponseError.message);
         break;
       case 'success' :
         messenger.createMessage(MESSAGES.onResponse.type, MESSAGES.onResponse.message)
-        await changeBarState(+data.remaining_time || 60)
+        await changeBarState(+data.remaining_time)
         break;
       default:
         messenger.createMessage(MESSAGES.onResponseUnknown.type, MESSAGES.onResponseUnknown.message)
@@ -112,22 +137,47 @@ function SecButton() {
   }
 
   server.onDisconnect = async () => {
+    isConnected = false
     messenger.createMessage(MESSAGES.onDisconnect.type, MESSAGES.onDisconnect.message, 0)
     await progressBar.stopAnimation();
-    lastTimer = 60 - progressBar.value;
     progressBar.animationTime = 1;
     await progressBar.setValue(0, false)
     gateBtn.setText(SPINNER);
   }
 
   server.onReconnect = async () => {
+    isConnected = true
     await messenger.removeAll();
     messenger.createMessage(MESSAGES.onReconnect.type, MESSAGES.onReconnect.message)
-    await changeBarState(lastTimer, false)
+    await syncState()
   }
 
-  server.connect(token);
+  server.connect();
 
+  const supervisor = new BackgroundSupervisor();
+
+  supervisor.onSelectPage = async () => {
+    if (!isConnected) return ;
+    if (!progressBar.isRunAnimation) await syncState();
+  }
+
+  supervisor.onEvery = async () => {
+    if (!isConnected) return ;
+    if (progressBar.isRunAnimation) await syncState()
+  }
+
+  supervisor.run()
+}
+
+
+async function updateGateStatus() {
+  const response = await fetch(UPDATE_FETCH_URL, {method:"GET", headers: {'X-Requested-With': 'XMLHttpRequest'}})
+  if (response.ok) {
+    const json = await response.json()
+    return +json.remaining_time
+  } else {
+    throw new Error(response.toString())
+  }
 }
 
 export default SecButton;

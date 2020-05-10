@@ -70,7 +70,7 @@
 
     &.error {
       background: rgba(186,0,0,.90);
-      border-color: #7F0000;
+      border-color: #500000;
 
       &:before {
         content: @fa-var-times;
@@ -83,6 +83,24 @@
 
       &:before {
         content: @fa-var-info;
+      }
+    }
+
+    &.warning {
+      background: rgba(255, 151, 2, .90);
+      border-color: #573401;
+
+      &:before {
+        content: @fa-var-exclamation-triangle;
+      }
+    }
+
+    &.debug {
+      background: black;
+      border-color: black;
+
+      &:before {
+        content: @fa-var-bug;
       }
     }
   }

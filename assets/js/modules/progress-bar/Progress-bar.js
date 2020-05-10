@@ -2,10 +2,11 @@ import './progress-button.less'
 
 class ProgressBar {
 
+  id = 0
   _value = 0
   _animationTime = 1000
-  _isCancelAnimation = false
   _isAnimation = false
+  _isCancelAnimation = false
 
   constructor(selector, option={}) {
     const defaultOptions = {
@@ -42,14 +43,8 @@ class ProgressBar {
 
     this._onChangePosition = () => defaultOptions.onChangePosition(this.value)
     this._onComplete = () => defaultOptions.onComplete(this.value)
-
-    this._animationTime = 100;
-    this._value = this._options.start;
-    this._changeBarPosition(this._options.start).then(()=> {
-      this._isAnimation = false;
-      this._isCancelAnimation = false;
-      this._animationTime = this._options.animationTime;
-    })
+    this.setValue(this._options.start, false)
+        .then(()=> this._isAnimation = false);
   }
 
   set animationTime(val) {
@@ -58,6 +53,10 @@ class ProgressBar {
 
   get animationTime() {
     return this._animationTime / 1000;
+  }
+
+  get isRunAnimation() {
+    return this._isAnimation;
   }
 
   get isFull() {
@@ -75,12 +74,11 @@ class ProgressBar {
 
     if(this._isAnimation) {
       console.error('Animation in process');
-      return;
+      await Promise.resolve();
     }
 
     await this._changeBarPosition(val, animation)
-    this._isAnimation = false;
-    this._isCancelAnimation = false;
+
   }
 
   get value() {
@@ -88,15 +86,11 @@ class ProgressBar {
   }
 
   async stopAnimation() {
-    const checkerTimeout = () => new Promise(resolve => {
-      setTimeout(()=>resolve(), 200);
-    })
-    if(this._isAnimation) {
-      this._isCancelAnimation = true;
-      while (this._isAnimation) {
-        await checkerTimeout();
-      }
+    this._isCancelAnimation = true;
+    while (this._isAnimation) {
+      await new Promise(resolve => setTimeout(()=>resolve(), 0))
     }
+    this._isCancelAnimation = false;
   }
 
   _changeColor(value) {
@@ -123,8 +117,10 @@ class ProgressBar {
   async _changeBarPosition (newValue, animate) {
     const {min, max} = {...this._options},
           oldValue = animate ? this.value : newValue;
+    const newNormalizeValue = Math.round(newValue/(max - min) * 100),
+          oldNormalizeValue = Math.round(oldValue/(max - min) * 100);
 
-    let steps = (Math.abs(newValue - oldValue)) * 5 || 1;
+    let steps = (Math.abs(newNormalizeValue - oldNormalizeValue)) * 2 || 1;
 
     const animation = step => new Promise(resolve => {
       setTimeout(()=> {
@@ -139,7 +135,6 @@ class ProgressBar {
         if (this.isFull) {
           this._onComplete(this.value)
         }
-
         if (this.isEmpty && this._options.colorThenMin) {
           const colorForSet = this._options.startColor;
           this._node.style.backgroundColor = `rgba(${colorForSet.join(', ')})`;
@@ -152,9 +147,12 @@ class ProgressBar {
 
     this._isAnimation = true;
     for (let i = 1; i <= steps; i++) {
-      if (this._isCancelAnimation) return Promise.resolve();
       await animation(i);
+      if (this._isCancelAnimation) {
+        break
+      }
     }
+    this._isAnimation = false;
   }
 }
 

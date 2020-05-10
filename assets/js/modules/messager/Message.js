@@ -53,3 +53,17 @@ export class InfoMessage extends Message{
     this._node.classList.add('info');
   }
 }
+
+export class WarningMessage extends Message{
+  constructor(text, parent) {
+    super(text, parent);
+    this._node.classList.add('warning');
+  }
+}
+
+export class DebugMessage extends Message{
+  constructor(text, parent) {
+    super(text, parent);
+    this._node.classList.add('debug');
+  }
+}
