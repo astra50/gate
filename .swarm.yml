@@ -44,8 +44,7 @@ services:
             CENTRIFUGO_API_KEY: ${CENTRIFUGO_API_KEY}
             CENTRIFUGO_ADMIN_PASSWORD: ${CENTRIFUGO_ADMIN_PASSWORD}
             CENTRIFUGO_ADMIN_SECRET: ${CENTRIFUGO_ADMIN_SECRET}
-            UISCOM_ID: ${UISCOM_ID}
-            UISCOM_SECRET: ${UISCOM_SECRET}
+            UISCOM_TOKEN: ${UISCOM_TOKEN}
             SENTRY_DSN: ${SENTRY_DSN}
         stop_grace_period: 120s
         deploy:
