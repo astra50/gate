@@ -93,16 +93,15 @@ function SecButton() {
   }
 
   const syncState = async () => {
-    let serverTimeRemaining,
-        localTimeRemaining = 60 - progressBar.value
+    let serverTimeRemaining;
     try {
       serverTimeRemaining = await updateGateStatus();
     } catch (e) {
       messenger.createMessage(MESSAGES.onSupervisorError.type, MESSAGES.onSupervisorError.message + e)
       return
     }
-
-    if (Math.abs(serverTimeRemaining - localTimeRemaining) > 1.5) {
+    let localTimeRemaining = 60 - progressBar.value
+    if (Math.abs(serverTimeRemaining - localTimeRemaining) > 2) {
       console.log("sync complete", localTimeRemaining , '=>', serverTimeRemaining)
       await changeBarState(+serverTimeRemaining)
     }
