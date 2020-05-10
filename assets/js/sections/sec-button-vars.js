@@ -5,7 +5,7 @@ export const MESSAGES = {
   },
   onDisconnect: {
     type: 'error',
-    message: 'Восстанавливаю связь с воротам...'
+    message: 'Восстанавливаю связь с воротами...'
   },
   onReconnect: {
     type: 'info',
@@ -35,6 +35,11 @@ export const MESSAGES = {
     type: 'warning',
     message: 'Подожди немного, ворота не казенные'
   },
+  onSupervisorError: {
+    type: 'debug',
+    message: 'Supervisor: '
+  },
+
 }
 
 

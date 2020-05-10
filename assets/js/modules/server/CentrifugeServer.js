@@ -11,8 +11,8 @@ class CentrifugeServer extends Server {
     this._connection.on('disconnect', (context)=> this.onDisconnect(context))
   }
 
-  connect(token) {
-    this._connection.setToken(token);
+  connect() {
+    this._connection.setToken(this._options.token);
     this._connection.connect()
 
     this._subscribtion = this._connection.subscribe(this._options.API_CHANNEL)
