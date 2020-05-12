@@ -7,6 +7,7 @@ import Messenger from '../modules/messager/Messager';
 import {MESSAGES, PROGRESS_BAR_COLORS} from './sec-button-vars';
 import BackgroundSupervisor
   from '../modules/background-supervisor/BackgroundSupervisor';
+import SharingButton from '../modules/sharing-button/Sharing-button';
 
 const SPINNER = '<div class="lds-roller" style="background: #f5f5f5">' +
     '<div></div><div></div><div></div><div></div>' +
@@ -41,6 +42,8 @@ function SecButton() {
     timeout: 10000,
     debug: false
   })
+
+  const sharingButton = new SharingButton();
 
   const progressBar = new ProgressBar(buttonSelector, {
     startColor: PROGRESS_BAR_COLORS.start,

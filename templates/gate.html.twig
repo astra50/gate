@@ -10,10 +10,22 @@
                         <img src="{{ asset('img/astra_logo.png') }}" alt="Астра">
                     </div>
                     <div class="container">
+                        <a class="sharing-button"></a>
+
                         <div class="button-wrapper">
                             <div class="progress-bar round-button" id="gate-button"></div>
                         </div>
                     </div>
+                </div>
+                <div class="sharing-wrapper is-inited is-active">
+
+                    <ul class="sharing-list">
+                        <li class="sharing-item"><a class="sharing-item__btn type5" href="#" data-type="5">На 2 недели</a></li>
+                        <li class="sharing-item"><a class="sharing-item__btn type4" href="#" data-type="4">На неделю</a></li>
+                        <li class="sharing-item"><a class="sharing-item__btn type3" href="#" data-type="3">На завтра</a></li>
+                        <li class="sharing-item"><a class="sharing-item__btn type2" href="#" data-type="2">На сегодня</a></li>
+                        <li class="sharing-item"><a class="sharing-item__btn type1" href="#" data-type="1">Курьер</a></li>
+                    </ul>
                 </div>
             </section>
             <div id="init-state" data-init-timer="{{ gate_remaining_time() }}"
