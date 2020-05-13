@@ -77,7 +77,7 @@ function SecButton() {
         }
 
         if (progressBar.isBlocked) {
-          messenger.createMessage('error', "У вас нет доступа")
+          messenger.createMessage(MESSAGES.onAccessError.type, MESSAGES.onAccessError.message)
           return
         }
 
@@ -189,10 +189,10 @@ function SecButton() {
       sharingModal.show().then(()=> {})
     },
     onCopy: ()=> {
-      messenger.createMessage('success', 'Ссылка скопирована, отправьте ее доверенному человеку')
+      messenger.createMessage(MESSAGES.onCopySuccess.type, MESSAGES.onCopySuccess.message)
     },
     onCopyError: ()=> {
-      messenger.createMessage('error', 'Ошибка копирования, попробуйте скорировать вручную')
+      messenger.createMessage(MESSAGES.onCopyError.type, MESSAGES.onCopyError.message)
     }
   })
 
@@ -201,7 +201,7 @@ function SecButton() {
     try {
       passLink = await getPassLink(passObj.type)
     } catch (e) {
-      messenger.createMessage('error', 'Ошибка получения пропуска, сообщите в чат СНТ')
+      messenger.createMessage(MESSAGES.onShareError.type, MESSAGES.onShareError.message)
       return
     }
     sharingButton.link = passLink
