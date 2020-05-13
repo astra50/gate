@@ -1,0 +1,27 @@
+{% extends 'layout.html.twig' %}
+
+{% block body %}
+    <div class="site-wrapper">
+        <main class="site-main">
+            <section class="sec-access-denied">
+                <div class="sec-access-denied__back"></div>
+                <div class="sec-access-denied__front">
+                    <div class="sec-access-denied__logo">
+                        <img src="{{ asset('img/astra_logo.png') }}" alt="Астра">
+                    </div>
+                    <div class="container">
+                        <div class="sec-access-denied__text">
+                            <h1> Доступ запрещен!</h1>
+                            Для получения доступа отбратитесь жителю <br> СНТ АСТРА.
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div id="init-state" data-init-timer="{{ gate_remaining_time() }}"
+                                 data-token="{{ centrifugo_connection_token(app.user.toId) }}"
+                 style="display: none"></div>
+        </main>
+    </div>
+
+{% endblock body %}
+{#is-inited is-active#}
