@@ -36,6 +36,8 @@ class SharingButton {
   }
 
   _copyToClipboard() {
+    this._linkNode.disabled = false
+
     try {
       this._linkNode.select();
       document.execCommand('copy')
@@ -43,6 +45,8 @@ class SharingButton {
     } catch (e) {
       this._options.onCopyError(e)
     }
+
+    this._linkNode.disabled = true
   }
 
   /***
