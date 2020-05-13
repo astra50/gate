@@ -69,6 +69,8 @@ function SecButton() {
     size: 170,
     onClick: async () => {
       if (progressBar.isFull) {
+        sharingButton.link = ''
+        sharingButton.mode = 'begin'
         gateBtn.setText(SPINNER)
         const response = await fetch(SEND_FETCH_URL, {method: 'POST'})
         if(response.ok) {
