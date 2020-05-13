@@ -9,7 +9,8 @@ class SharingButton {
 
     const options = {
       onShareClick: () => {},
-      onCopyClick: () => {}
+      onCopy: () => {},
+      onCopyError: () => {}
     }
 
     this._options = {...options, ...userOptions}
@@ -27,12 +28,21 @@ class SharingButton {
           this._options.onShareClick()
           break
         case 'share':
-          this._options.onCopyClick()
+          this._copyToClipboard()
           break
         default: return
       }
     })
+  }
 
+  _copyToClipboard() {
+    try {
+      this._linkNode.select();
+      document.execCommand('copy')
+      this._options.onCopy()
+    } catch (e) {
+      this._options.onCopyError(e)
+    }
   }
 
   /***
