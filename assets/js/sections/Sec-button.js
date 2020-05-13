@@ -9,6 +9,7 @@ import BackgroundSupervisor
   from '../modules/background-supervisor/BackgroundSupervisor';
 import SharingButton from '../modules/sharing-button/Sharing-button';
 import SharingModal from '../modules/sharing-button/Sharing-modal';
+import boolean from 'less/lib/less/functions/boolean';
 
 const SPINNER = '<div class="lds-roller" style="background: #f5f5f5">' +
     '<div></div><div></div><div></div><div></div>' +
@@ -36,6 +37,7 @@ function getInitData() {
 
 function SecButton() {
 
+  const fullMode = !Boolean(document.querySelector('#pass-info'))
   const buttonSelector = '#gate-button';
   const {token, initTimer} = {...getInitData()}
   let isConnected = false;
@@ -69,8 +71,11 @@ function SecButton() {
     size: 170,
     onClick: async () => {
       if (progressBar.isFull) {
-        sharingButton.link = ''
-        sharingButton.mode = 'begin'
+        if (fullMode) {
+          sharingButton.link = ''
+          sharingButton.mode = 'begin'
+        }
+
         gateBtn.setText(SPINNER)
         const response = await fetch(SEND_FETCH_URL, {method: 'POST'})
         if(response.ok) {
@@ -177,7 +182,6 @@ function SecButton() {
   const sharingButton = new SharingButton('#sharing-button', {
     onShareClick: ()=> {
       sharingModal.show().then(()=> {})
-      console.log('открыл')
     },
     onCopy: ()=> {
       messenger.createMessage('success', 'Ссылка скопирована, отправьте ее доверенному человеку')
