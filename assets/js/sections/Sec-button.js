@@ -8,6 +8,7 @@ import {MESSAGES, PROGRESS_BAR_COLORS} from './sec-button-vars';
 import BackgroundSupervisor
   from '../modules/background-supervisor/BackgroundSupervisor';
 import SharingButton from '../modules/sharing-button/Sharing-button';
+import SharingModal from '../modules/sharing-button/Sharing-modal';
 
 const SPINNER = '<div class="lds-roller" style="background: #f5f5f5">' +
     '<div></div><div></div><div></div><div></div>' +
@@ -17,6 +18,7 @@ const API_URL = `${location.protocol === 'http:' ? 'ws' : 'wss'}://${location.ho
 const API_CHANNEL = 'gate'
 const SEND_FETCH_URL = location.href
 const UPDATE_FETCH_URL = location.href
+const PASS_LINK_FETCH_URL = ''
 
 function getInitData() {
   const dataNode = document.querySelector('#init-state');
@@ -42,8 +44,6 @@ function SecButton() {
     timeout: 10000,
     debug: false
   })
-
-  const sharingButton = new SharingButton();
 
   const progressBar = new ProgressBar(buttonSelector, {
     startColor: PROGRESS_BAR_COLORS.start,
@@ -170,8 +170,44 @@ function SecButton() {
   }
 
   supervisor.run()
+
+  const sharingModal = new SharingModal('#sharing-popup')
+  const sharingButton = new SharingButton('#sharing-button', {
+    onShareClick: ()=> {
+      sharingModal.show().then(()=> {})
+      console.log('открыл')
+    },
+    onCopy: ()=> {
+      messenger.createMessage('success', 'Ссылка скопирована, отправьте ее доверенному человеку')
+    },
+    onCopyError: ()=> {
+      messenger.createMessage('error', 'Ошибка копирования, попробуйте скорировать вручную')
+    }
+  })
+
+  sharingModal.onSelect = async passObj => {
+    let passLink = ''
+    try {
+      passLink = await getPassLink(passObj.type)
+    } catch (e) {
+      messenger.createMessage('error', 'Ошибка получения пропуска, сообщите в чат СНТ')
+      return
+    }
+    sharingButton.link = passLink
+    sharingButton.mode = 'share'
+  }
 }
 
+async function getPassLink(passType) {
+  return location.href + `/lohpidr-` + passType;
+  const response = await fetch(PASS_LINK_FETCH_URL, {method:"GET", headers: {'X-Requested-With': 'XMLHttpRequest'}})
+  if (response.ok) {
+    const json = await response.json()
+    return +json.pass_link
+  } else {
+    throw new Error(response.toString())
+  }
+}
 
 async function updateGateStatus() {
   const response = await fetch(UPDATE_FETCH_URL, {method:"GET", headers: {'X-Requested-With': 'XMLHttpRequest'}})
