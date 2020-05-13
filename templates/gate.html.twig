@@ -10,27 +10,15 @@
                         <img src="{{ asset('img/astra_logo.png') }}" alt="Астра">
                     </div>
                     <div class="container">
-                        <div class="sharing-button" id="sharing-button">
-                            <label class="sharing-button__label" for="sharing-button__input">
-                                Временная ссылка для доступа:
-                            </label>
-                            <input class="sharing-button__input" disabled id="sharing-button__input">
-                            <a class="sharing-button__btn" href="#"></a>
+                        <div class="pass-info" id="pass-info">
+                            <div class="pass-info__title">Пропуск действует:</div>
+                            <div class="pass-info__text time">До: 10 августа  2020г</div>
+                            <div class="pass-info__text opens">Окрытий: неограничено</div>
                         </div>
                         <div class="button-wrapper">
                             <div class="progress-bar round-button" id="gate-button"></div>
                         </div>
                     </div>
-                </div>
-                <div class="sharing-wrapper" id="sharing-popup">
-                    <ul class="sharing-list">
-                        <li class="sharing-item"><a class="sharing-item__btn type5" href="#" data-type="5">На 2 недели</a></li>
-                        <li class="sharing-item"><a class="sharing-item__btn type4" href="#" data-type="4">На неделю</a></li>
-                        <li class="sharing-item"><a class="sharing-item__btn type3" href="#" data-type="3">На завтра</a></li>
-                        <li class="sharing-item"><a class="sharing-item__btn type2" href="#" data-type="2">На сегодня</a></li>
-                        <li class="sharing-item"><a class="sharing-item__btn type1" href="#" data-type="1">Курьер</a></li>
-                        <li class="sharing-item"><a class="sharing-item__btn type0" href="#" data-type="0">Назад</a></li>
-                    </ul>
                 </div>
             </section>
             <div id="init-state" data-init-timer="{{ gate_remaining_time() }}"
