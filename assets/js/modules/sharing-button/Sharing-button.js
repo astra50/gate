@@ -35,9 +35,13 @@ class SharingButton {
 
   }
 
+  /***
+   *
+   * @param {string} val set url
+   */
   set link(val) {
-    this._link = val
-    this._linkNode.value = val
+    this._link = val.toString()
+    this._linkNode.value = val.toString()
   }
 
   get link() {

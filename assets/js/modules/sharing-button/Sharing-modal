@@ -1,0 +1,47 @@
+class SharingModal {
+
+  _isOpen = false
+
+  constructor(selector) {
+    this._node = document.querySelector(selector)
+    if (this._node && this._node.firstElementChild.childElementCount) {
+      const items = this._node.firstElementChild.children
+      const modal = this
+      for (let item of items) {
+        new SharingItem(item, function() {
+          if (this.type === 0) {
+            modal.close();
+            return;
+          }
+          modal.close()
+          modal.onSelect(this)
+        })
+      }
+    }
+  }
+
+  show() {
+    this._isOpen = true
+    this._node.classList.add('is-active')
+  }
+
+  close() {
+    this._isOpen = false
+    this._node.classList.remove('is-active')
+  }
+
+  onSelect() {}
+
+}
+
+class SharingItem {
+
+  constructor(node, onClick) {
+    this.type = +node.dataset.type
+    node.addEventListener('click', ()=> onClick())
+  }
+
+}
+
+export default SharingModal
+
