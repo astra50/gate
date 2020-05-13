@@ -7,14 +7,13 @@ class SharingModal {
       const items = this._node.firstElementChild.children
       const modal = this
       for (let item of items) {
-        console.log(item.firstElementChild.dataset.type)
-        new SharingItem(item.firstElementChild, function() {
-          if (this.type === 0) {
+        let itemObj = new SharingItem(item.firstElementChild, () => {
+          if (itemObj.type === 0) {
             modal.close();
             return;
           }
           modal.close()
-          modal.onSelect(this)
+          modal.onSelect(itemObj)
         })
       }
     }
