@@ -9,7 +9,7 @@ import BackgroundSupervisor
   from '../modules/background-supervisor/BackgroundSupervisor';
 import SharingButton from '../modules/sharing-button/Sharing-button';
 import SharingModal from '../modules/sharing-button/Sharing-modal';
-import boolean from 'less/lib/less/functions/boolean';
+
 
 const SPINNER = '<div class="lds-roller" style="background: #f5f5f5">' +
     '<div></div><div></div><div></div><div></div>' +
@@ -74,6 +74,11 @@ function SecButton() {
         if (fullMode) {
           sharingButton.link = ''
           sharingButton.mode = 'begin'
+        }
+
+        if (progressBar.isBlocked) {
+          messenger.createMessage('error', "У вас нет доступа")
+          return
         }
 
         gateBtn.setText(SPINNER)

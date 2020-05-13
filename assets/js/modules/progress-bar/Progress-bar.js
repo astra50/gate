@@ -7,6 +7,7 @@ class ProgressBar {
   _animationTime = 1000
   _isAnimation = false
   _isCancelAnimation = false
+  _isBlocked = false
 
   constructor(selector, option={}) {
     const defaultOptions = {
@@ -68,6 +69,7 @@ class ProgressBar {
   }
 
   async setValue(val, animation=true) {
+    if (this._isBlocked) return
     const {max, min} = {...this._options}
     val = val > max ? max : val;
     val = val < min ? min : val;
@@ -79,6 +81,15 @@ class ProgressBar {
 
     await this._changeBarPosition(val, animation)
 
+  }
+
+  async block() {
+    await this.setValue(this._options.min, false)
+    this._isBlocked = true;
+  }
+
+  get isBlocked() {
+    return this._isBlocked
   }
 
   get value() {
