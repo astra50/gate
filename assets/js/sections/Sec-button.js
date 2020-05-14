@@ -186,8 +186,6 @@ function SecButton() {
   const sharingModal = new SharingModal('#sharing-popup')
   const sharingButton = new SharingButton('#sharing-button', {
     onShareClick: ()=> {
-      messenger.createMessage('info', 'В разработке, скоро появится')
-      return
       sharingModal.show().then(()=> {})
     },
     onCopy: ()=> {
