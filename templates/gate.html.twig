@@ -1,5 +1,7 @@
 {% extends 'layout.html.twig' %}
 
+{% set testing = app.request.query.has('testing') %}
+
 {% block body %}
     <div class="site-wrapper">
         <main class="site-main">
@@ -13,7 +15,7 @@
 
                     </div>
                     <div class="container">
-                        <div class="sharing-button" id="sharing-button">
+                        <div class="sharing-button" id="sharing-button"  style="{{ testing ? '' : 'visibility: hidden' }}" >
                             <label class="sharing-button__label" for="sharing-button__input">
                                 Временная ссылка для доступа:
                             </label>
