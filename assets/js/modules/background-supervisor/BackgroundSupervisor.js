@@ -15,6 +15,7 @@ class BackgroundSupervisor {
   }
 
   run() {
+    if (!Visibility.isSupported()) return
     const updateLastOnline = async () =>{
       const prevTime = +localStorage.getItem('lastTimeOnline'),
             currentTime = new Date().getTime();
