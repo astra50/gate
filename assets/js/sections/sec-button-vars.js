@@ -39,7 +39,23 @@ export const MESSAGES = {
     type: 'debug',
     message: 'Supervisor: '
   },
+  onAccessError: {
+    type: 'error',
+    message: 'У вас нет доступа'
+  },
+  onCopySuccess: {
+    type: 'success',
+    message: 'Ссылка скопирована, отправьте ее доверенному человеку'
+  },
+  onCopyError: {
+    type: 'error',
+    message: 'Ошибка копирования, попробуйте скорировать вручную'
+  },
 
+  onShareError: {
+    type: 'error',
+    message: 'Ошибка получения пропуска, сообщите в чат СНТ'
+  },
 }
 
 

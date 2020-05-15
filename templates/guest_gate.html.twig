@@ -1,0 +1,33 @@
+{% extends 'layout.html.twig' %}
+
+{% block body %}
+    <div class="site-wrapper">
+        <main class="site-main">
+            <section class="sec-button">
+                <div class="sec-button__back"></div>
+                <div class="sec-button__front">
+                    <div class="sec-button__logo">
+                        <img src="{{ asset('img/astra_logo.png') }}" alt="Астра">
+                    </div>
+                    <div class="container">
+                        <div class="pass-info" id="pass-info">
+                            <div class="pass-info__title">Пропуск действует:</div>
+                            <div class="pass-info__text time">До: 10 августа  2020г</div>
+                            <div class="pass-info__text opens">Открытий: неограничено</div>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <div class="button-wrapper">
+                            <div class="progress-bar round-button" id="gate-button"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div id="init-state" data-init-timer="{{ gate_remaining_time() }}"
+                                 data-token="{{ centrifugo_connection_token(app.user.toId) }}"
+                 style="display: none"></div>
+        </main>
+    </div>
+
+{% endblock body %}
+{#is-inited is-active#}

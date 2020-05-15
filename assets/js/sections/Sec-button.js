@@ -7,6 +7,9 @@ import Messenger from '../modules/messager/Messager';
 import {MESSAGES, PROGRESS_BAR_COLORS} from './sec-button-vars';
 import BackgroundSupervisor
   from '../modules/background-supervisor/BackgroundSupervisor';
+import SharingButton from '../modules/sharing-button/Sharing-button';
+import SharingModal from '../modules/sharing-button/Sharing-modal';
+
 
 const SPINNER = '<div class="lds-roller" style="background: #f5f5f5">' +
     '<div></div><div></div><div></div><div></div>' +
@@ -16,6 +19,7 @@ const API_URL = `${location.protocol === 'http:' ? 'ws' : 'wss'}://${location.ho
 const API_CHANNEL = 'gate'
 const SEND_FETCH_URL = location.href
 const UPDATE_FETCH_URL = location.href
+const PASS_LINK_FETCH_URL = ''
 
 function getInitData() {
   const dataNode = document.querySelector('#init-state');
@@ -33,6 +37,7 @@ function getInitData() {
 
 function SecButton() {
 
+  const fullMode = !Boolean(document.querySelector('#pass-info'))
   const buttonSelector = '#gate-button';
   const {token, initTimer} = {...getInitData()}
   let isConnected = false;
@@ -66,6 +71,16 @@ function SecButton() {
     size: 170,
     onClick: async () => {
       if (progressBar.isFull) {
+        if (fullMode) {
+          sharingButton.link = ''
+          sharingButton.mode = 'begin'
+        }
+
+        if (progressBar.isBlocked) {
+          messenger.createMessage(MESSAGES.onAccessError.type, MESSAGES.onAccessError.message)
+          return
+        }
+
         gateBtn.setText(SPINNER)
         const response = await fetch(SEND_FETCH_URL, {method: 'POST'})
         if(response.ok) {
@@ -167,8 +182,43 @@ function SecButton() {
   }
 
   supervisor.run()
+
+  const sharingModal = new SharingModal('#sharing-popup')
+  const sharingButton = new SharingButton('#sharing-button', {
+    onShareClick: ()=> {
+      sharingModal.show().then(()=> {})
+    },
+    onCopy: ()=> {
+      messenger.createMessage(MESSAGES.onCopySuccess.type, MESSAGES.onCopySuccess.message)
+    },
+    onCopyError: ()=> {
+      messenger.createMessage(MESSAGES.onCopyError.type, MESSAGES.onCopyError.message)
+    }
+  })
+
+  sharingModal.onSelect = async passObj => {
+    let passLink = ''
+    try {
+      passLink = await getPassLink(passObj.type)
+    } catch (e) {
+      messenger.createMessage(MESSAGES.onShareError.type, MESSAGES.onShareError.message)
+      return
+    }
+    sharingButton.link = passLink
+    sharingButton.mode = 'share'
+  }
 }
 
+async function getPassLink(passType) {
+  return location.href + `/lohpidr-` + passType;
+  const response = await fetch(PASS_LINK_FETCH_URL, {method:"GET", headers: {'X-Requested-With': 'XMLHttpRequest'}})
+  if (response.ok) {
+    const json = await response.json()
+    return +json.pass_link
+  } else {
+    throw new Error(response.toString())
+  }
+}
 
 async function updateGateStatus() {
   const response = await fetch(UPDATE_FETCH_URL, {method:"GET", headers: {'X-Requested-With': 'XMLHttpRequest'}})
