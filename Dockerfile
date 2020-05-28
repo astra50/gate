@@ -1,4 +1,4 @@
-FROM node:14.2.0-alpine as node-base
+FROM node:14.3.0-alpine as node-base
 
 LABEL MAINTAINER="Konstantin Grachev <me@grachevko.ru>"
 
