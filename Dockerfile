@@ -107,7 +107,7 @@ CMD ["sh", "-c", "composer dump-env prod && exec php-fpm"]
 #
 # nginx
 #
-FROM nginx:1.17.10-alpine as nginx-base
+FROM nginx:1.19.0-alpine as nginx-base
 
 WORKDIR /usr/local/app/public
 
