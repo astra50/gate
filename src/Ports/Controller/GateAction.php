@@ -7,6 +7,7 @@ namespace App\Ports\Controller;
 use App\Application\Gate\Request\OpenRequestCommand;
 use App\Domain\Gate\GateRemaining;
 use App\Domain\User\User;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use SimpleBus\SymfonyBridge\Bus\CommandBus;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,6 +29,9 @@ final class GateAction extends AbstractController
         $this->remaining = $remaining;
     }
 
+    /**
+     * @Cache(vary={"X-Requested-With"})
+     */
     public function __invoke(Request $request): Response
     {
         $user = $this->getUser();
