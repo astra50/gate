@@ -51,7 +51,7 @@ services:
         image: memcached:1.6.5-alpine
 
     centrifugo:
-        image: centrifugo/centrifugo:v2.4
+        image: centrifugo/centrifugo:v2.7.0
         labels:
             ru.grachevko.dhu: 'centrifugo.astra50.local'
         environment:
