@@ -137,16 +137,6 @@ steps:
         depends_on:
             - composer install
 
-    -   name: symfony security
-        image: astra50/gate-fpm:base
-        commands:
-            - vendor/bin/security-checker security:check $APP_DIR/composer.lock
-        when:
-            branch:
-                exclude: [ master ]
-        depends_on:
-            - composer install
-
     -   name: symfony linters
         image: astra50/gate-fpm:base
         commands:
