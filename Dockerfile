@@ -24,7 +24,7 @@ RUN NODE_ENV=production webpack
 #
 # PHP-FPM
 #
-FROM composer:1.10.6 as composer
+FROM composer:2.0.14 as composer
 FROM php:7.4.6-fpm-buster as php-fpm-base
 
 LABEL MAINTAINER="Konstantin Grachev <me@grachevko.ru>"
@@ -56,8 +56,6 @@ RUN set -ex \
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_MEMORY_LIMIT -1
 COPY --from=composer /usr/bin/composer /usr/bin/composer
-RUN set -ex \
-    && composer global require "hirak/prestissimo:^0.3"
 
 ENV WAIT_FOR_IT /usr/local/bin/wait-for-it.sh
 RUN set -ex \
