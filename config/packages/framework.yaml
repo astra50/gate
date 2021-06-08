@@ -26,7 +26,10 @@ services:
             - [ addServer, [ '%env(SESSION_MEMCACHED_HOST)%', '%env(SESSION_MEMCACHED_PORT)%' ]]
     session.handler.memcached:
         class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler
-        arguments: [ '@session.memcached' ]
+        arguments:
+            - '@session.memcached'
+            -
+                expiretime: 2678400 # month
 
 parameters:
     env(SESSION_MEMCACHED_HOST): 'memcached'
