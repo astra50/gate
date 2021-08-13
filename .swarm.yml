@@ -17,6 +17,7 @@ services:
                 delay: 10s
                 order: start-first
             labels:
+                - "traefik.enable=true"
                 - "traefik.http.routers.astra50-gate.rule=Host(`gate.astra50.ru`)"
                 - "traefik.http.routers.astra50-gate.entrypoints=websecure"
                 - "traefik.http.routers.astra50-gate.tls=true"
@@ -126,6 +127,7 @@ services:
                 parallelism: 1
                 delay: 5s
             labels:
+                - "traefik.enable=true"
                 - "traefik.http.routers.astra50-centrifugo.rule=Host(`centrifugo.astra50.ru`)"
                 - "traefik.http.routers.astra50-centrifugo.entrypoints=websecure"
                 - "traefik.http.routers.astra50-centrifugo.tls=true"
