@@ -1,5 +1,5 @@
 parameters:
-    env(CRM_HASURA_ADMIN_SECRET): null
+    env(SITE_SECRET): null
 
 services:
     _defaults:

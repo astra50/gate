@@ -44,7 +44,7 @@ services:
             CENTRIFUGO_ADMIN_PASSWORD: ${CENTRIFUGO_ADMIN_PASSWORD}
             CENTRIFUGO_ADMIN_SECRET: ${CENTRIFUGO_ADMIN_SECRET}
             SENTRY_DSN: ${SENTRY_DSN}
-            CRM_HASURA_ADMIN_SECRET: ${CRM_HASURA_ADMIN_SECRET}
+            SITE_SECRET: ${SITE_SECRET}
         stop_grace_period: 120s
         deploy:
             mode: replicated

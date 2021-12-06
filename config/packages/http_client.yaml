@@ -2,6 +2,6 @@ framework:
     http_client:
         scoped_clients:
             astra50httpclient:
-                base_uri: https://api.astra50.ru/v1/graphql
+                base_uri: https://workflow.astra50.ru/webhook/site-gate-open
                 headers:
-                    'x-hasura-admin-secret': '%env(CRM_HASURA_ADMIN_SECRET)%'
+                    'x-astra-site-secret': '%env(SITE_SECRET)%'

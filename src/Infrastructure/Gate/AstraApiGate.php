@@ -34,20 +34,8 @@ final class AstraApiGate implements Gate
         $this->httpClient->request('POST', '', [
             'timeout' => 2.5,
             'json' => [
-                'query' => <<<'QUERY'
-                    mutation openGate($gateId: uuid, $email: String) {
-                        insert_gate_open_one(
-                            object: { gate_id: $gateId, reason_id: "site", source: $email }
-                        ) {
-                            id
-                        }
-                    }
-                    QUERY,
-                'operationName' => 'openGate',
-                'variables' => [
-                    'gateId' => self::SOUTH_GATE,
-                    'email' => $user->getUsername(),
-                ],
+                'gate' => self::SOUTH_GATE,
+                'user' => $user->getUsername(),
             ],
         ])->toArray();
     }
