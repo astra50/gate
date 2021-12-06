@@ -64,7 +64,7 @@ final class OpenHandler
         }
 
         try {
-            $this->gate->open($command->requestId);
+            $this->gate->open($command->requestId, $command->userId);
 
             $this->storage->addSuccess(
                 new OpenSuccess($command->requestId)

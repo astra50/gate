@@ -1,5 +1,5 @@
 parameters:
-    env(UISCOM_TOKEN): null
+    env(CRM_HASURA_ADMIN_SECRET): null
 
 services:
     _defaults:
@@ -16,7 +16,6 @@ services:
     App\Infrastructure\Centrifugo\PhpcentCentrifugo: ~
     App\Infrastructure\Centrifugo\Centrifugo: '@App\Infrastructure\Centrifugo\PhpcentCentrifugo'
 
-    App\Infrastructure\Gate\UiscomGate:
+    App\Infrastructure\Gate\AstraApiGate:
         arguments:
-            - '@uiscom'
-            - '%env(UISCOM_TOKEN)%'
+            - '@astra50httpclient'

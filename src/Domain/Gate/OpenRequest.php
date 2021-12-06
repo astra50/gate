@@ -40,6 +40,6 @@ class OpenRequest implements ContainsRecordedMessages
         $this->userId = $userId;
         $this->createdAt = new DateTimeImmutable();
 
-        $this->record(new GateOpenRequested($this->id));
+        $this->record(new GateOpenRequested($this->id, $this->userId));
     }
 }

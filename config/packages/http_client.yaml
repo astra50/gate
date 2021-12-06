@@ -1,5 +1,7 @@
 framework:
     http_client:
         scoped_clients:
-            uiscom:
-                base_uri: https://callapi.uiscom.ru/v4.0
+            astra50httpclient:
+                base_uri: https://api.astra50.ru/v1/graphql
+                headers:
+                    'x-hasura-admin-secret': '%env(CRM_HASURA_ADMIN_SECRET)%'
