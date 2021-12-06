@@ -235,6 +235,8 @@ steps:
                 from_secret: GIT_SSH_KEY
         when:
             branch: [ rc ]
+        depends_on:
+            - deploy
 
 services:
     -   name: postgres
