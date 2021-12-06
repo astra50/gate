@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use function trim;
 
 /**
  * @see \HWI\Bundle\OAuthBundle\Security\Core\User\EntityUserProvider
@@ -33,7 +34,7 @@ final class DoctrineUserProvider implements UserProviderInterface, OAuthAwareUse
     {
         $email = $response->getEmail();
 
-        if (null === $email) {
+        if (null === $email || '' === trim($email)) {
             throw new AuthenticationServiceException('OAuth2 server return null username');
         }
 
