@@ -18,9 +18,17 @@
     <link rel="icon" type="img/png" href="{{ asset('img/favicons/favicon-16x16.png') }}" sizes="16x16"/>
     <link rel="icon" type="img/png" href="{{ asset('img/favicons/favicon-32x32.png') }}" sizes="32x32"/>
     <link rel="apple-touch-icon" href="{{ asset('img/favicons/apple-touch-icon-152x152.png') }}" sizes="152x152"/>
+     <!-- CDN FONTS ============================================================================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
+    <!-- CDN BRANDS ICON ========================================================================== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" 
+        integrity="sha512-sVSECYdnRMezwuq5uAjKQJEcu2wybeAPjU4VJQ9pCRcCY4pIpIw4YMHIOQ0CypfwHRvdSPbH++dA3O4Hihm/LQ==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Styles ================================================================================== -->
     <link rel="stylesheet" href="{{ asset('styles.css') }}"/><!-- Main styles from .less -->
-
+    <link rel="stylesheet" href="{{ asset('main.css') }}"/>
     <script src="https://browser.sentry-cdn.com/5.5.0/bundle.min.js" crossorigin="anonymous"></script>
     <script>
       Sentry.init({ dsn: 'https://eb090484615d4e3189a2fae889681e07@sentry.automagistre.ru/5' });
