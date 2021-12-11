@@ -6,7 +6,8 @@ const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const { options } = require("less");
 
 const NODE_ENV = process.env.NODE_ENV || "development";
 const PATHS = {
@@ -15,8 +16,18 @@ const PATHS = {
     assets: 'assets/'
 };
 
-const isProd = NODE_ENV !== "development"
-const isDev = !isProd
+const isDev = NODE_ENV === "development";
+
+const resolveAssetsPath = (resourcePath) => {
+    const pathSplit = resourcePath.split('/').reverse()
+    const assetIndex = pathSplit.findIndex((element) => element=== 'assets')
+    const path = pathSplit.slice(0, assetIndex)
+    return `/${path.reverse().join('/')}`
+}
+
+const progressHandler = (percentage, message, ...args) => {
+    console.info(`${Math.round(percentage * 100)}%`, message, ...args);
+}
 
 module.exports = {
     mode: NODE_ENV,
@@ -26,6 +37,7 @@ module.exports = {
     },
     output: {
         filename: PATHS.assets + "[name].[hash].js",
+        chunkFilename: PATHS.assets + "[id].[chunkhash].js",
         path: PATHS.dist,
         library: "[name]",
         publicPath: "/"
@@ -34,14 +46,14 @@ module.exports = {
         "extensions": [".js", ".less", ".css"]
     },
     optimization: {
-        minimize: true,
+        minimize: !isDev,
         minimizer:[
             new TerserPlugin({
                 parallel: true,
                 terserOptions: {
                     extractComments: 'all',
                     compress: {
-                        drop_console: isProd,
+                        drop_console: !isDev,
                     },
                 },
             })
@@ -50,7 +62,7 @@ module.exports = {
             cacheGroups: {
                 vendors: {
                     name: 'vendors',
-                    test: /node_modules/,
+                    test: /[\\/]node_modules[\\/]/,
                     chunks: 'all',
                     enforce: true,
                 }
@@ -60,53 +72,42 @@ module.exports = {
     module: {
         rules: [{
             test: /\.js$/,
-            loader: "babel-loader",
-            exclude: /(node_modules|bower_components)/
+            exclude: /(node_modules|bower_components)/,
+            use: {
+                loader: "babel-loader",
+            }
         },{
             test: /\.css$/,
             use: [
                 MiniCssExtractPlugin.loader,
-                {
-                    loader: "css-loader",
-                },
-                {
-                    loader: "postcss-loader",
-                    options: {
-                        sourceMap: true,
-                        config: { path: 'postcss.config.js'}
-                    }
-                },
+                "css-loader",
+                "postcss-loader",
             ]
         },{
             test: /\.less$/,
             use: [
                 MiniCssExtractPlugin.loader,
-                {
+                { 
                     loader: "css-loader",
-                },{
-                    loader: "postcss-loader",
-                    options: {
-                        sourceMap: true,
-                        config: { path: 'postcss.config.js'}
-                    }
-                },{
-                    loader: "less-loader",
-                    options: {
-                        sourceMap: true,
-                    }
-                }
+                    options: { url: false }
+                },
+                "postcss-loader",
+                "less-loader",
             ]
         },{
-            test: /\.(png|jpg|gif|svg)$/,
-            loader: "file-loader",
-            options: {
-                name: "[path][name].[ext]"
-            }
+            test: /\.(png|jpg)$/,
+            type: 'asset/resource',
         },{
             test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
             loader: "file-loader",
             options: {
-                name: "[path][name].[ext]"
+                name: "[name].[ext]",
+                outputPath(url, resourcePath){
+                    return resolveAssetsPath(resourcePath)
+                },
+                publicPath(url, resourcePath) {
+                    return resolveAssetsPath(resourcePath)
+                }
             }
         }]
     },
@@ -114,16 +115,19 @@ module.exports = {
     watchOptions: {
         aggregateTimeout: 100
     },
-    devtool: NODE_ENV === "development" ? "inline-cheap-module-source-map" : false,
-
+    devtool: false,
+    stats: {
+        entrypoints: false,
+        children: false
+    },
     plugins: [
+        new webpack.ProgressPlugin(progressHandler),
         new webpack.DefinePlugin({
             NODE_ENV: JSON.stringify(NODE_ENV)
         }),
         new MiniCssExtractPlugin({
             filename: PATHS.assets + '[name].[hash].css',
             chunkFilename: PATHS.assets + '[id].[hash].css',
-            esModule: true,
         }),
         new CleanWebpackPlugin({
             dry: false,
@@ -132,9 +136,19 @@ module.exports = {
             protectWebpackAssets: false,
             cleanOnceBeforeBuildPatterns: ['**/assets/*', '**/img/*']
         }),
-        new CopyWebpackPlugin([
-            {from: PATHS.src + 'img', to: PATHS.dist + 'img', ignore:['*/uncompressed/*']}
-        ]),
-        new ManifestPlugin()
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: PATHS.src + 'img',
+                    to: PATHS.dist + 'img',
+                },
+            ],
+        }),
+        new WebpackManifestPlugin({}),
+        new webpack.SourceMapDevToolPlugin({
+            filename: PATHS.assets + '[name].[hash].js.map',
+            exclude: ['vendors.js'],
+            fileContext: 'public',
+        }),
     ],
 };
