@@ -49,6 +49,12 @@
     {% endif %}
 </head>
 <body>
+    {% set currentMounth = date() | date('m') | number_format %}
+    {% if currentMounth in [11, 12, 1, 2, 3] %}
+        {% set background = 'winter' %}
+    {% else %}
+        {% set background = 'summer' %}
+    {% endif %}
     {% block body %}
     {% endblock body %}
     <script src="{{ asset('vendors.js') }}"></script>

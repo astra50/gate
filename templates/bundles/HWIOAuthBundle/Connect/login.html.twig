@@ -1,32 +1,29 @@
 {% extends 'layout.html.twig' %}
 
 {% block body %}
-    <div class="site-wrapper">
-        <main class="site-main">
-            <section class="sec-login">
-                <div class="sec-login__back"></div>
-                <div class="sec-login__front">
-                    <div class="sec-login__logo">
-                        <img src="{{ asset('img/astra_logo.png') }}" alt="Астра">
-                    </div>
-                    <div class="container">
-                        <div class="sec-login__note">
-                            Войти с помощью ...
+    <main class="site-main site-background" style="background-image: url({{ asset('img/backgrounds/' ~ background ~ '.jpg') }})">
+        <div class="main__inner">
+            <div class="container">      
+            <section class='login'>
+                <div class="login__logo">
+                    <img class="login__img" src="{{ asset('/img/astra_logo.png') }}" alt="">
+                </div>
+                <div class="login__note">
+                    <span>Войти с помощью ...</span>
+                </div>
+                <div class="login__buttons">
+                    {% for owner in hwi_oauth_resource_owners() %}
+                        <div class="login__button">
+                            <a href="{{ hwi_oauth_login_url(owner) }}" >
+                                <i class="icon icon_{{ owner | trans({}, 'HWIOAuthBundle') }}"></i>
+                            </a>
                         </div>
-                        <ul class="social">
-                            {% for owner in hwi_oauth_resource_owners() %}
-                            <li>
-                                <a href="{{ hwi_oauth_login_url(owner) }}" >
-                                    <i class="icon icon_{{ owner | trans({}, 'HWIOAuthBundle') }}"></i>
-                                </a>
-                            </li>
-                            {% endfor %}
-                        </ul>   
-                    </div>
+                    {% endfor %}
                 </div>
             </section>
-        </main>
-    </div>
+            </div>
+        </div>
+    </main>
     {% if error is defined and error %}
         <span>{{ error }}</span>
     {% endif %}
