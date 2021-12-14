@@ -1,19 +1,12 @@
 class App {
   iniSecs() {
     if (document.querySelector('section.sec-button')) {
-      require.ensure([], require => {
-        require('./sections/Sec-button').default();
-      })
+        import('./sections/sec-button')
     }
   }
 
-  run() {
-    this.iniSecs();
-  }
+  run() { this.iniSecs() }
 }
 
 const app = new App();
-
 app.run();
-
-
