@@ -14,7 +14,7 @@
                 <div class="login__buttons">
                     {% for owner in hwi_oauth_resource_owners() %}
                         <div class="login__button">
-                            <a href="{{ hwi_oauth_login_url(owner) }}" >
+                            <a class="login__button_link" href="{{ hwi_oauth_login_url(owner) }}" >
                                 <i class="icon icon_{{ owner | trans({}, 'HWIOAuthBundle') }}"></i>
                             </a>
                         </div>
