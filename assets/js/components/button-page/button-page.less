@@ -1,0 +1,37 @@
+.sec-button {
+  height: 100%;
+}
+
+.button-page {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  grid-template-rows: 1fr 100px 1fr;
+  grid-template-areas:
+    "logo"
+    "gates"
+    "button";
+  justify-items: center;
+
+  &__logo {
+    grid-area: logo;
+    align-self: end;
+  }
+
+  &__logo-img {
+    max-width: 100%;
+  }
+
+  &__button {
+    grid-area: button;
+    align-self: flex-start;
+    display: grid;
+    grid-template-areas: "button";
+    justify-items: center;
+  }
+
+  &__button-note, &__progress-bar {
+    grid-area: button;
+    place-self: center;
+  }
+}
