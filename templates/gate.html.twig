@@ -3,16 +3,16 @@
 {% set testing = app.request.query.has('testing') %}
 
 {% block body %}
-    <main class="site-main site-background" style="background-image: url({{ asset('img/backgrounds/' ~ background ~ '.jpg') }})">
-        <section class="sec-button">
-                <div class="container">
-                    <div id="js-button"></div>
+    <main class="site-main site-background"  style="background-image: url({{ asset('img/backgrounds/' ~ background ~ '.jpg') }})">
+        <section class="sec-button" >
+                <div class="container" id="js-button">
+
                 </div>
         </section>
-        <div id="init-state" data-init-timer="{{ gate_remaining_time() }}"
-                                data-token="{{ centrifugo_connection_token(app.user.toId) }}"
-                style="display: none">
-        </div>
     </main>
+    <div id="init-state" style="display: none" 
+        data-init-timer="{{ gate_remaining_time() }}"
+        data-token="{{ centrifugo_connection_token(app.user.toId) }}">
+    </div>
 {% endblock body %}
 {#is-inited is-active#}
