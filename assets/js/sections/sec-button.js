@@ -1,5 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import ButtonPage from "../components/button-page/button-page";
+import App from "../components/App";
 
-ReactDOM.render(<ButtonPage/>, document.getElementById('js-button'))
+ReactDOM.render(<App/>, document.getElementById('root'))
