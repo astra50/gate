@@ -1,6 +1,6 @@
 import React, { Component } from "react"
-import GateButton from "../gate-button/gate-button"
-import ProgressBar from "../progress-bar/progress-bar"
+import GateButton from "../gate-button"
+import ProgressBar from "../progress-bar"
 import "./button-page.less"
 import Server from "../../modules/server/CentrifugeServer"
 
@@ -9,7 +9,6 @@ const API_URL = `${location.protocol === 'http:' ? 'ws' : 'wss'}://${location.ho
 const API_CHANNEL = 'gate'
 const SEND_FETCH_URL = location.href
 const UPDATE_FETCH_URL = location.href
-const PASS_LINK_FETCH_URL = ''
 
 const ENABLE_CLR = `rgb(3, 146, 85)` // Green
 const DISABLE_CLR = `rgba(255, 0, 0)` // Red
