@@ -1,7 +1,7 @@
 import React from 'react';
 import './gate-button.less'
 
-const GateButton = ({isActive, value, onClick,className=''}) => {
+const GateButton = ({isActive, value, onClick, className=''}) => {
   const styles = {
     fontSize: value.toString().length > 4 ? '0.2em' : '0.3em'
   }  
