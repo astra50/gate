@@ -1,7 +1,7 @@
 import React from 'react';
-import './gate-button.less'
+import './text-button.less'
 
-const GateButton = ({isActive, value, onClick, className=''}) => {
+const TextButton = ({isActive, value, onClick, className=''}) => {
   const styles = {
     fontSize: value.toString().length > 4 ? '0.2em' : '0.3em'
   }  
@@ -14,4 +14,4 @@ const GateButton = ({isActive, value, onClick, className=''}) => {
   )
 }
 
-export default GateButton;
+export default TextButton;
