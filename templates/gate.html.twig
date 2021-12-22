@@ -5,7 +5,7 @@
 {% block body %}
     <main class="site-main site-background"  style="background-image: url({{ asset('img/backgrounds/' ~ background ~ '.jpg') }})">
         <section class="sec-button" >
-                <div class="container" id="js-button">
+                <div class="container" id="root">
 
                 </div>
         </section>
@@ -15,4 +15,3 @@
         data-token="{{ centrifugo_connection_token(app.user.toId) }}">
     </div>
 {% endblock body %}
-{#is-inited is-active#}

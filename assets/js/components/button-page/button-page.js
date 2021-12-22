@@ -1,6 +1,6 @@
 import React, { Component } from "react"
-import GateButton from "../gate-button"
-import ProgressBar from "../progress-bar"
+import GateButton from "../button/gate-button"
+import ProgressBar from "../button/gate-button/progress-bar"
 import "./button-page.less"
 import Server from "../../modules/server/CentrifugeServer"
 
