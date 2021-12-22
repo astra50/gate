@@ -1,36 +1,46 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "../components/App";
-import Server from '../modules/server/CentrifugeServer';
-import CentrifugeContext from '../context/centrifuge';
+import Server from "../modules/server/CentrifugeServer";
+import CentrifugeContext from "../context/centrifuge";
+import AlertProvider, { types } from "../components/alert";
 
+const API_CHANNEL = "gate";
+const API_URL = `${
+  location.protocol === "http:" ? "ws" : "wss"
+}://${location.host.replace(/gate/, "centrifugo")}/connection/websocket`;
 
-const API_CHANNEL = 'gate'
-const API_URL = `${location.protocol === 'http:' ? 'ws' : 'wss'}://${location.host.replace(/gate/, 'centrifugo')}/connection/websocket`
+function Main() {
+  const { token, initTimer } = { ...getInitData() };
+  const server = new Server({ API_URL, API_CHANNEL, token });
 
-function Main ()  {
+  const alertOptions = {
+    timeout: 5000,
+    type: types.INFO,
+  };
 
-  const {token, initTimer} = {...getInitData()}
-  const server = new Server({API_URL, API_CHANNEL, token})
   return (
     <CentrifugeContext.Provider value={server}>
-      <App/>
+      <AlertProvider {...alertOptions}>
+        <App />
+      </AlertProvider>
     </CentrifugeContext.Provider>
-  )
+  );
 }
 
-ReactDOM.render(<Main/>, document.getElementById('root'))
+ReactDOM.render(<Main />, document.getElementById("root"));
 
 function getInitData() {
-  const dataNode = document.querySelector('#init-state');
+  const dataNode = document.querySelector("#init-state");
   const data = {
     initTimer: 0,
-    token: ''};
-  let  initData;
+    token: "",
+  };
+  let initData;
 
   if (dataNode) {
-   initData = {...dataNode.dataset}
-   dataNode.remove();
+    initData = { ...dataNode.dataset };
+    dataNode.remove();
   }
   return Object.assign(data, initData);
 }
