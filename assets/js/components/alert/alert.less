@@ -1,0 +1,94 @@
+.alert {
+  &__container {
+    margin: 0 auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: auto;
+    z-index: 100;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    margin: 3px auto;
+    padding: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    box-shadow: 0 1rem 10px rgba(0, 0, 0, 0.4);
+    background-color: white;
+    border-radius: 0.4rem;
+    overflow: hidden;
+    color: white;
+    opacity: 0.9;
+    position: relative;
+    left: 0;
+    top: 0;
+    height: 3.2rem;
+
+    &:before {
+      font-family: "Font Awesome 5 Free", "Font Awesome 5 Brands";
+      font-size: 1.2rem;
+      font-weight: 900;
+      content: "";
+      display: inline-block;
+      text-align: center;
+      height: 2.2rem;
+      width: 2.2rem;
+      min-height: 2.2rem;
+      min-width: 2.2rem;
+      line-height: 2rem;
+      background-color: white;
+      border: 2px solid white;
+      border-radius: 50%;
+      margin: 0 0.5rem 0 1.5rem;
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    &.success {
+      background: rgba(0, 142, 0, 0.9);
+      border-color: #004c00;
+
+      &:before {
+        content: "\f00c"; //@fa-var-check
+      }
+    }
+
+    &.error {
+      background: rgba(186, 0, 0, 0.9);
+      border-color: #500000;
+
+      &:before {
+        content: "\f00d"; //@fa-var-times
+      }
+    }
+
+    &.info {
+      background: rgba(12, 95, 178, 0.9);
+      border-color: #05284c;
+
+      &:before {
+        content: "\f129"; // @fa-var-info
+      }
+    }
+
+    &.warning {
+      background: rgba(255, 151, 2, 0.9);
+      border-color: #573401;
+
+      &:before {
+        content: "\f12a"; //@fa-var-exclamation-triangle
+      }
+    }
+
+    &.debug {
+      background: black;
+      border-color: black;
+
+      &:before {
+        content: "\f188"; //@fa-var-bug
+      }
+    }
+  }
+}
