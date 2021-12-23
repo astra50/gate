@@ -5,8 +5,9 @@
     top: 0;
     left: 0;
     right: 0;
-    height: auto;
+    height: auto !important;
     z-index: 100;
+    padding-bottom: 0;
   }
 
   &__item {
@@ -21,11 +22,25 @@
     border-radius: 0.4rem;
     overflow: hidden;
     color: white;
-    opacity: 0.9;
     position: relative;
     left: 0;
-    top: 0;
-    height: 3.2rem;
+    transition: all 500ms ease-in-out;
+
+    &-enter,
+    &-exit {
+      opacity: 0;
+      visibility: hidden;
+      top: -2rem;
+      height: 0;
+    }
+
+    &-enter-active,
+    &-enter-done {
+      opacity: 0.9;
+      visibility: visible;
+      top: 0;
+      height: 3.2rem;
+    }
 
     &:before {
       font-family: "Font Awesome 5 Free", "Font Awesome 5 Brands";
