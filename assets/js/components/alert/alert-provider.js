@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import AlertContext from "../../context/alert";
 import types from "./types";
 import "./alert.less";
+import { CSSTransition, TransitionGroup } from "react-transition-group/";
 
 function* idGenerator() {
   let id = 1000;
@@ -12,7 +13,7 @@ function* idGenerator() {
 const getId = idGenerator();
 
 function AlertProvider({ children, timeout, type }) {
-  const [alerts, setAlerts] = useState([]);
+  const [alerts, setAlerts] = useState();
   const root = useRef(null);
   const alertContext = useRef(null);
   const alertTimersId = useRef([]);
@@ -21,6 +22,7 @@ function AlertProvider({ children, timeout, type }) {
     node.id = "alerts";
     document.body.appendChild(node);
     root.current = node;
+    setAlerts([]);
   }, []);
 
   const remove = useCallback((alert) => {
@@ -45,7 +47,6 @@ function AlertProvider({ children, timeout, type }) {
         ...alertOptions,
       };
       alert.remove = () => remove(alert);
-      console.log(alert.timeout);
       if (alert.timeout) {
         const timerId = setTimeout(() => {
           alert.remove();
@@ -119,11 +120,19 @@ function AlertProvider({ children, timeout, type }) {
       {root.current &&
         createPortal(
           <div className='alert__container container'>
-            {alerts.map((alert) => (
-              <div className={`alert__item ${alert.type}`} key={alert.id}>
-                <span>{alert.message}</span>
-              </div>
-            ))}
+            <TransitionGroup component={null}>
+              {alerts.map((alert) => (
+                <CSSTransition
+                  timeout={500}
+                  key={alert.id}
+                  classNames='alert__item'
+                >
+                  <div className={`alert__item ${alert.type}`}>
+                    <span>{alert.message}</span>
+                  </div>
+                </CSSTransition>
+              ))}
+            </TransitionGroup>
           </div>,
           root.current
         )}
