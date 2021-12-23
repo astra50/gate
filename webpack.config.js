@@ -38,6 +38,7 @@ module.exports = {
   output: {
     filename: PATHS.assets + "[name].[hash].js",
     chunkFilename: PATHS.assets + "[id].[chunkhash].js",
+    sourceMapFilename: PATHS.assets + "[id].[hash].map",
     path: PATHS.dist,
     library: "[name]",
     publicPath: "/",
@@ -97,26 +98,12 @@ module.exports = {
         test: /\.(png|jpg)$/,
         type: "asset/resource",
       },
-      {
-        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "file-loader",
-        options: {
-          name: "[name].[ext]",
-          outputPath(url, resourcePath) {
-            return resolveAssetsPath(resourcePath);
-          },
-          publicPath(url, resourcePath) {
-            return resolveAssetsPath(resourcePath);
-          },
-        },
-      },
     ],
   },
   watch: NODE_ENV === "development",
   watchOptions: {
     aggregateTimeout: 100,
   },
-  devtool: false,
   stats: {
     entrypoints: false,
     children: false,
@@ -128,7 +115,7 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       filename: PATHS.assets + "[name].[hash].css",
-      chunkFilename: PATHS.assets + "[id].[hash].css",
+      chunkFilename: PATHS.assets + "[id].[chunkhash].css",
     }),
     new CleanWebpackPlugin({
       dry: false,
@@ -147,9 +134,9 @@ module.exports = {
     }),
     new WebpackManifestPlugin({}),
     new webpack.SourceMapDevToolPlugin({
-      filename: PATHS.assets + "[name].[hash].js.map",
+      filename: PATHS.assets + "sourcemaps/" + "[file].map[query]",
       exclude: ["vendors.js"],
-      fileContext: "public",
+      //   fileContext: "public",
     }),
   ],
 };
