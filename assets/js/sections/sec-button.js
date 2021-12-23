@@ -11,7 +11,7 @@ const API_URL = `${
 }://${location.host.replace(/gate/, "centrifugo")}/connection/websocket`;
 
 function Main() {
-  const { token, initTimer } = { ...getInitData() };
+  const { token } = { ...getInitData() };
   const server = new Server({ API_URL, API_CHANNEL, token });
 
   const alertOptions = {
@@ -33,7 +33,6 @@ ReactDOM.render(<Main />, document.getElementById("root"));
 function getInitData() {
   const dataNode = document.querySelector("#init-state");
   const data = {
-    initTimer: 0,
     token: "",
   };
   let initData;

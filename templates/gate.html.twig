@@ -10,8 +10,7 @@
                 </div>
         </section>
     </main>
-    <div id="init-state" style="display: none" 
-        data-init-timer="{{ gate_remaining_time() }}"
+    <div id="init-state" style="display: none"
         data-token="{{ centrifugo_connection_token(app.user.toId) }}">
     </div>
 {% endblock body %}

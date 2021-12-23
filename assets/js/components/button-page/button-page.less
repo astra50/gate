@@ -12,10 +12,20 @@
     "gates"
     "button";
   justify-items: center;
+  row-gap: 10px;
 
   &__logo {
     grid-area: logo;
     align-self: end;
+  }
+
+  &__gates {
+    grid-area: gates;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
   }
 
   &__logo-img {

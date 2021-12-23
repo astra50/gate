@@ -3,7 +3,7 @@ import React, { useState, useCallback } from "react";
 const SEND_FETCH_URL = location.href;
 const UPDATE_FETCH_URL = location.href;
 
-function useGateREST() {
+function useGateREST(activeGateUuid) {
   const [remainingTime, setRemainingTime] = useState(0);
   const [isError, setIsError] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
@@ -11,7 +11,8 @@ function useGateREST() {
   const openGate = useCallback(async () => {
     setIsFetching(true);
     try {
-      const response = await fetch(SEND_FETCH_URL, { method: "POST" });
+      const fetchUrl = `${SEND_FETCH_URL}?gate_id=${activeGateUuid}`;
+      const response = await fetch(fetchUrl, { method: "POST" });
       if (response.ok) {
         setIsError(false);
       } else {
@@ -21,11 +22,12 @@ function useGateREST() {
       setIsError(true);
     }
     setIsFetching(false);
-  }, []);
+  }, [activeGateUuid]);
 
   const updateGateStatus = useCallback(async () => {
     try {
-      const response = await fetch(UPDATE_FETCH_URL, {
+      const fetchUrl = `${UPDATE_FETCH_URL}?gate_id=${activeGateUuid}`;
+      const response = await fetch(fetchUrl, {
         method: "GET",
         headers: { "X-Requested-With": "XMLHttpRequest" },
       });
@@ -38,7 +40,8 @@ function useGateREST() {
     } catch (e) {
       setIsError(true);
     }
-  }, []);
+  }, [activeGateUuid]);
+
   return [remainingTime, isFetching, isError, openGate, updateGateStatus];
 }
 
