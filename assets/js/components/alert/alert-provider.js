@@ -13,7 +13,7 @@ function* idGenerator() {
 const getId = idGenerator();
 
 function AlertProvider({ children, timeout, type }) {
-  const [alerts, setAlerts] = useState();
+  const [alerts, setAlerts] = useState([]);
   const root = useRef(null);
   const alertContext = useRef(null);
   const alertTimersId = useRef([]);

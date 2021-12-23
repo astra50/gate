@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useCentrifuge, useGateREST, useAlert } from "../../hooks";
 import ButtonWithProgress from "../button";
 import "./button-page.less";
+import { ALERTS } from "../../options";
 
 function ButtonPage() {
   const [timer, setTimer] = useState({ seconds: 0 });
@@ -9,29 +10,51 @@ function ButtonPage() {
   const [fetchResponse, isFetching, isFetchError, openGate, updateGateStatus] =
     useGateREST();
   const alert = useAlert();
+  const errorConnectionAlert = useRef();
+  const isOneceConnected = useRef(false);
+
   const handleClickGateButton = () => {
-    alert.info("info", { timeout: 0 });
-    alert.error("error");
-    alert.warning("warning");
-    alert.debug("debug");
-    alert.success("success");
+    openGate();
   };
 
   useEffect(() => {
-    setTimer({ seconds: socketResponse.remaining_time });
+    setTimer({ seconds: socketResponse.remaining_time | 0 });
   }, [socketResponse]);
 
   useEffect(() => {
-    setTimer({ seconds: fetchResponse.remaining_time });
+    setTimer({ seconds: fetchResponse.remaining_time | 0 });
   }, [fetchResponse]);
 
   useEffect(() => {
-    if (!isConnected) setTimer({ seconds: 0 });
-    if (isConnected) updateGateStatus();
+    if (!isConnected) {
+      if (isOneceConnected.current) {
+        errorConnectionAlert.current = alert.error(ALERTS.onDisconnect.alert, {
+          timeout: 0,
+        });
+        setTimer({ seconds: 0 });
+      } else {
+        errorConnectionAlert.current = alert.error(
+          ALERTS.onTryFirstConnect.alert,
+          { timeout: 0 }
+        );
+      }
+    }
+    if (isConnected) {
+      errorConnectionAlert.current && errorConnectionAlert.current.remove();
+      isOneceConnected.current && alert.info(ALERTS.onReconnect.alert);
+      isOneceConnected.current = true;
+      updateGateStatus();
+    }
   }, [isConnected]);
 
   useEffect(() => {
-    if (isFetchError & !isFetching) setTimer({ seconds: 10 });
+    if (isFetchError & !isFetching) {
+      alert.error(ALERTS.onSendError.alert);
+      setTimer({ seconds: 10 });
+    }
+    if (!isFetchError & !isFetching) {
+      alert.success(ALERTS.onResponse.alert);
+    }
   }, [isFetchError, isFetching]);
 
   return (
