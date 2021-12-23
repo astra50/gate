@@ -30,8 +30,20 @@
     justify-items: center;
   }
 
-  &__button-note, &__progress-bar {
+  &__button-note,
+  &__progress-bar {
     grid-area: button;
     place-self: center;
+  }
+}
+
+@media (max-height: 420px) {
+  .button-page {
+    grid-template-areas:
+      "gates"
+      "button";
+    &__logo {
+      display: none;
+    }
   }
 }
