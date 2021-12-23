@@ -33,7 +33,6 @@ function useGateREST(activeGateUuid) {
       });
       if (response.ok) {
         const json = await response.json();
-        console.log(json);
         setRemainingTime(json);
       } else {
         setIsError(true);
