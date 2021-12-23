@@ -1,3 +1,3 @@
-import ButtonPage from "./button-page-hooks";
+import ButtonPage from "./button-page";
 
 export default ButtonPage;
