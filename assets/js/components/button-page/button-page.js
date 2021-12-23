@@ -2,13 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { useCentrifuge, useGateREST, useAlert } from "../../hooks";
 import ButtonWithProgress from "../button";
 import "./button-page.less";
-import { ALERTS } from "../../options";
+import { ALERTS, GATES } from "../../options";
+import GateSwitcher from "../gate-switcher";
 
 function ButtonPage() {
   const [timer, setTimer] = useState({ seconds: 0 });
+  const [activeGateUuid, setActiveGateUuid] = useState(GATES[0].uuid);
   const [socketResponse, isConnected, isSocketError] = useCentrifuge();
   const [fetchResponse, isFetching, isFetchError, openGate, updateGateStatus] =
-    useGateREST();
+    useGateREST(activeGateUuid);
   const alert = useAlert();
   const errorConnectionAlert = useRef();
   const isOneceConnected = useRef(false);
@@ -18,7 +20,19 @@ function ButtonPage() {
   };
 
   useEffect(() => {
-    setTimer({ seconds: socketResponse.remaining_time | 0 });
+    const lastUsedGate = localStorage.getItem("lastUsedGate");
+    if (lastUsedGate) setActiveGateUuid(lastUsedGate);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("lastUsedGate", activeGateUuid);
+    updateGateStatus();
+  }, activeGateUuid);
+
+  useEffect(() => {
+    if (activeGateUuid === socketResponse.gate_id) {
+      setTimer({ seconds: socketResponse.remaining_time | 0 });
+    }
   }, [socketResponse]);
 
   useEffect(() => {
@@ -32,11 +46,6 @@ function ButtonPage() {
           timeout: 0,
         });
         setTimer({ seconds: 0 });
-      } else {
-        errorConnectionAlert.current = alert.error(
-          ALERTS.onTryFirstConnect.alert,
-          { timeout: 0 }
-        );
       }
     }
     if (isConnected) {
@@ -66,6 +75,10 @@ function ButtonPage() {
           className='button-page__logo-img'
         />
       </div>
+      <GateSwitcher
+        activeUuid={activeGateUuid}
+        handelSwitchGate={setActiveGateUuid}
+      />
       <ButtonWithProgress
         timer={timer}
         isConnected={isConnected}

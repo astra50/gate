@@ -20,6 +20,7 @@ function useCentrifuge() {
       setIsConnected(true);
     };
     server.onResponse = (data) => {
+      console.log(data);
       switch (data.open) {
         case "fail":
           setIsError(true);
