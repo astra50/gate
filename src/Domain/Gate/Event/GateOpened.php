@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Gate\Event;
 
 use App\Domain\Gate\OpenRequestId;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * @psalm-immutable
@@ -12,9 +13,11 @@ use App\Domain\Gate\OpenRequestId;
 final class GateOpened
 {
     public OpenRequestId $requestId;
+    public UuidInterface $gateId;
 
-    public function __construct(OpenRequestId $requestId)
+    public function __construct(OpenRequestId $requestId, UuidInterface $gateId)
     {
         $this->requestId = $requestId;
+        $this->gateId = $gateId;
     }
 }

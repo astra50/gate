@@ -42,21 +42,23 @@ final class OpenHandler
                     $command->requestId,
                     [
                         'message' => sprintf('%s already locked.', __CLASS__),
-                    ]
+                    ],
+                    $command->gateId,
                 )
             );
 
             return;
         }
 
-        $remainingTime = $this->remaining->getRemainingTime();
+        $remainingTime = $this->remaining->getRemainingTime($command->gateId);
         if (0 !== $remainingTime) {
             $this->storage->addFail(
                 new OpenFail(
                     $command->requestId,
                     [
                         'message' => 'Gate blocked due to positive remaining time',
-                    ]
+                    ],
+                    $command->gateId,
                 )
             );
 
@@ -64,10 +66,10 @@ final class OpenHandler
         }
 
         try {
-            $this->gate->open($command->requestId, $command->userId);
+            $this->gate->open($command->requestId, $command->userId, $command->gateId);
 
             $this->storage->addSuccess(
-                new OpenSuccess($command->requestId)
+                new OpenSuccess($command->requestId, $command->gateId)
             );
         } catch (Throwable $e) {
             SentryBundle::getCurrentHub()->captureException($e);
@@ -77,7 +79,8 @@ final class OpenHandler
                     $command->requestId,
                     [
                         'message' => $e->getMessage(),
-                    ]
+                    ],
+                    $command->gateId,
                 )
             );
         } finally {

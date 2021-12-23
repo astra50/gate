@@ -7,6 +7,8 @@ namespace App\Ports\Controller;
 use App\Application\Gate\Request\OpenRequestCommand;
 use App\Domain\Gate\GateRemaining;
 use App\Domain\User\User;
+use App\Infrastructure\Gate\AstraApiGate;
+use Ramsey\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use SimpleBus\SymfonyBridge\Bus\CommandBus;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,16 +37,17 @@ final class GateAction extends AbstractController
     public function __invoke(Request $request): Response
     {
         $user = $this->getUser();
+        $gateId = Uuid::fromString($request->query->get('gate_id', AstraApiGate::SOUTH_GATE));
 
         if ($request->isXmlHttpRequest()) {
             return new JsonResponse([
-                'remaining_time' => $this->remaining->getRemainingTime(),
+                'remaining_time' => $this->remaining->getRemainingTime($gateId),
             ]);
         }
 
         if ($request->isMethod('POST')) {
             $this->commandBus->handle(
-                new OpenRequestCommand($user->toId()),
+                new OpenRequestCommand($user->toId(), $gateId),
             );
 
             return new JsonResponse();

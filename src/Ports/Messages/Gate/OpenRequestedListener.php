@@ -20,7 +20,7 @@ final class OpenRequestedListener
     public function __invoke(GateOpenRequested $event): void
     {
         $this->commandBus->handle(
-            new OpenCommand($event->requestId, $event->userId)
+            new OpenCommand($event->requestId, $event->userId, $event->gateId)
         );
     }
 }

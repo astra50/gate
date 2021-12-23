@@ -24,7 +24,8 @@ final class OpenSuccessListener
     {
         $this->centrifugo->publish('gate', [
             'open' => 'success',
-            'remaining_time' => $this->remaining->getRemainingTime(),
+            'remaining_time' => $this->remaining->getRemainingTime($event->gateId),
+            'gate_id' => $event->gateId->toString(),
         ]);
     }
 }

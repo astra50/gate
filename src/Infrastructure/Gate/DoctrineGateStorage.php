@@ -15,11 +15,12 @@ use DateInterval;
 use DateTimeImmutable;
 use DateTimeZone;
 use Doctrine\ORM\NoResultException;
+use Ramsey\Uuid\UuidInterface;
 use function sprintf;
 
 final class DoctrineGateStorage implements GateStorage, GateRemaining
 {
-    private const TIMEOUT = 60;
+    private const TIMEOUT = 30;
 
     private ManagerRegistry $registry;
 
@@ -52,15 +53,17 @@ final class DoctrineGateStorage implements GateStorage, GateRemaining
         $this->registry->getManager()->persist($fail);
     }
 
-    public function getRemainingTime(): int
+    public function getRemainingTime(UuidInterface $gateId): int
     {
         try {
             $date = $this->registry->getManager()
                 ->createQueryBuilder()
                 ->select('t.createdAt')
                 ->from(OpenSuccess::class, 't')
+                ->where('t.gateId = :gateId')
                 ->orderBy('t.createdAt', 'DESC')
                 ->getQuery()
+                ->setParameter('gateId', $gateId->toString())
                 ->setMaxResults(1)
                 ->getSingleScalarResult();
         } catch (NoResultException $e) {

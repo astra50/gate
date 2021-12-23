@@ -19,7 +19,7 @@ final class OpenRequestHandler
     public function __invoke(OpenRequestCommand $command): void
     {
         $this->storage->addRequest(
-            new OpenRequest($command->userId),
+            new OpenRequest($command->userId, $command->gateId),
         );
     }
 }

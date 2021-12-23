@@ -31,6 +31,11 @@ class OpenFail implements ContainsRecordedMessages
     private OpenRequestId $requestId;
 
     /**
+     * @ORM\Column(type="uuid")
+     */
+    private UuidInterface $gateId;
+
+    /**
      * @ORM\Column(type="json")
      */
     private array $payload;
@@ -40,13 +45,14 @@ class OpenFail implements ContainsRecordedMessages
      */
     private DateTimeImmutable $createdAt;
 
-    public function __construct(OpenRequestId $requestId, array $payload)
+    public function __construct(OpenRequestId $requestId, array $payload, UuidInterface $gateId)
     {
         $this->id = Uuid::uuid6();
         $this->requestId = $requestId;
         $this->payload = $payload;
+        $this->gateId = $gateId;
         $this->createdAt = new DateTimeImmutable();
 
-        $this->record(new GateOpenFailed($this->requestId));
+        $this->record(new GateOpenFailed($this->requestId, $this->gateId));
     }
 }

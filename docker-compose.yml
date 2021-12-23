@@ -61,3 +61,10 @@ services:
             CENTRIFUGO_API_KEY: admin
             CENTRIFUGO_ADMIN_PASSWORD: admin
             CENTRIFUGO_ADMIN_SECRET: admin
+
+networks:
+    default:
+        name: astra50_gate
+        ipam:
+            config:
+                -   subnet: 192.168.63.0/24

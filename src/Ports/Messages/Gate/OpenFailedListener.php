@@ -21,6 +21,7 @@ final class OpenFailedListener
         $this->centrifugo->publish('gate', [
             'open' => 'fail',
             'reason' => 'Wooops...',
+            'gate_id' => $event->gateId->toString(),
         ]);
     }
 }

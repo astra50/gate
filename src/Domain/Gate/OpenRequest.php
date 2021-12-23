@@ -8,6 +8,7 @@ use App\Domain\Gate\Event\GateOpenRequested;
 use App\Domain\User\UserId;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\UuidInterface;
 use SimpleBus\Message\Recorder\ContainsRecordedMessages;
 use SimpleBus\Message\Recorder\PrivateMessageRecorderCapabilities;
 
@@ -30,16 +31,22 @@ class OpenRequest implements ContainsRecordedMessages
     private UserId $userId;
 
     /**
+     * @ORM\Column(type="uuid")
+     */
+    private UuidInterface $gateId;
+
+    /**
      * @ORM\Column(type="datetimetz_immutable")
      */
     private DateTimeImmutable $createdAt;
 
-    public function __construct(UserId $userId)
+    public function __construct(UserId $userId, UuidInterface $gateId)
     {
         $this->id = OpenRequestId::generate();
         $this->userId = $userId;
+        $this->gateId = $gateId;
         $this->createdAt = new DateTimeImmutable();
 
-        $this->record(new GateOpenRequested($this->id, $this->userId));
+        $this->record(new GateOpenRequested($this->id, $this->userId, $gateId));
     }
 }

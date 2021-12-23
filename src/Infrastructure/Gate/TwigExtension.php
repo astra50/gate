@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Gate;
 
 use App\Domain\Gate\GateRemaining;
+use Ramsey\Uuid\Uuid;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -25,7 +26,7 @@ final class TwigExtension extends AbstractExtension
         return [
             new TwigFunction(
                 'gate_remaining_time',
-                fn () => $this->remaining->getRemainingTime(),
+                fn (string $gateId = null) => $this->remaining->getRemainingTime(Uuid::fromString($gateId ?? AstraApiGate::SOUTH_GATE)),
             ),
         ];
     }

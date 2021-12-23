@@ -31,16 +31,22 @@ class OpenSuccess implements ContainsRecordedMessages
     private OpenRequestId $requestId;
 
     /**
+     * @ORM\Column(type="uuid")
+     */
+    private UuidInterface $gateId;
+
+    /**
      * @ORM\Column(type="datetimetz_immutable")
      */
     private DateTimeImmutable $createdAt;
 
-    public function __construct(OpenRequestId $requestId)
+    public function __construct(OpenRequestId $requestId, UuidInterface $gateId)
     {
         $this->id = Uuid::uuid6();
         $this->requestId = $requestId;
+        $this->gateId = $gateId;
         $this->createdAt = new DateTimeImmutable();
 
-        $this->record(new GateOpened($this->requestId));
+        $this->record(new GateOpened($this->requestId, $this->gateId));
     }
 }
