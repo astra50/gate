@@ -27,7 +27,7 @@ function ButtonPage() {
   useEffect(() => {
     localStorage.setItem("lastUsedGate", activeGateUuid);
     updateGateStatus();
-  }, activeGateUuid);
+  }, [activeGateUuid]);
 
   useEffect(() => {
     if (activeGateUuid === socketResponse.gate_id) {
