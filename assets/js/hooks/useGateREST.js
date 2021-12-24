@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 
-const SEND_FETCH_URL = location.href;
-const UPDATE_FETCH_URL = location.href;
+const SEND_FETCH_URL = location.origin + "/";
+const UPDATE_FETCH_URL = location.origin + "/";
 
 function useGateREST(activeGateUuid) {
   const [remainingTime, setRemainingTime] = useState(0);
