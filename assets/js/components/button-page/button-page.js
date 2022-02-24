@@ -1,9 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useCentrifuge, useGateREST, useAlert } from "../../hooks";
 import ButtonWithProgress from "../button";
-import "./button-page.less";
 import { ALERTS, GATES } from "../../options";
-import GateSwitcher from "../gate-switcher";
+import Streamer from "../../components/streamer";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper";
+import "./swiper-bundle.css";
+import "./button-page.less";
 
 function ButtonPage() {
   const [timer, setTimer] = useState({ seconds: 0 });
@@ -24,12 +27,13 @@ function ButtonPage() {
     if (lastUsedGate) setActiveGateUuid(lastUsedGate);
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("lastUsedGate", activeGateUuid);
-    updateGateStatus();
-  }, [activeGateUuid]);
+  // useEffect(() => {
+  //   localStorage.setItem("lastUsedGate", activeGateUuid);
+  //   updateGateStatus();
+  // }, [activeGateUuid]);
 
   useEffect(() => {
+    console.log(socketResponse);
     if (activeGateUuid === socketResponse.gate_id) {
       setTimer({ seconds: socketResponse.remaining_time | 0 });
     }
@@ -66,26 +70,40 @@ function ButtonPage() {
     }
   }, [isFetchError, isFetching]);
 
+  const pagination = {
+    clickable: true,
+    renderBullet: function (index, className) {
+      return '<span class="' + className + '">' + (index + 1) + "</span>";
+    },
+  };
+
   return (
     <div className='button-page'>
-      <div className='button-page__logo'>
-        <img
-          src='/img/astra_logo.png'
-          alt=''
-          className='button-page__logo-img'
-        />
+      <Streamer />
+      <div className='button-page__button'>
+        <Swiper
+          modules={[Navigation, Pagination]}
+          spaceBetween={50}
+          slidesPerView={1}
+          navigation
+          pagination={pagination}
+          onSlideChange={() => console.log("slide change")}
+        >
+          {GATES.map((gate) => (
+            <SwiperSlide key={gate.uuid}>
+              <ButtonWithProgress
+                timer={timer}
+                isConnected={isConnected}
+                isError={isSocketError || isFetchError}
+                isFetching={isFetching}
+                handleClickGateButton={handleClickGateButton}
+                gate={gate}
+                errorConnectionAlert={errorConnectionAlert}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
-      <GateSwitcher
-        activeUuid={activeGateUuid}
-        handelSwitchGate={setActiveGateUuid}
-      />
-      <ButtonWithProgress
-        timer={timer}
-        isConnected={isConnected}
-        isError={isSocketError || isFetchError}
-        isFetching={isFetching}
-        handleClickGateButton={handleClickGateButton}
-      />
     </div>
   );
 }

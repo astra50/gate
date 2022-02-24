@@ -4,6 +4,7 @@ import ProgressBar from "../progress-bar";
 import { GATE_INTERVAL, ENABLE_CLR, DISABLE_CLR } from "../../../options";
 import { useRemainingTimer } from "../../../hooks";
 import Spinner from "../../spinner/spinner";
+import "./button-with-progress.less";
 
 function ButtonWithProgress({
   timer = 0,
@@ -22,9 +23,9 @@ function ButtonWithProgress({
   };
 
   return (
-    <div className='button-page__button'>
+    <div className='button-with-progress'>
       <TextButton
-        className='button-page__button-note'
+        className='button-with-progress__button-note'
         value={getText(
           isConnected,
           isActive,
@@ -36,7 +37,7 @@ function ButtonWithProgress({
         onClick={onClick}
       />
       <ProgressBar
-        className='button-page__progress-bar'
+        className='button-with-progress__progress-bar'
         colors={getColors(isConnected, isActive, isError)}
         rotate={rotate}
         isActive={isActive}

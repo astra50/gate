@@ -46,11 +46,11 @@ export const GATES = [
     },
     uuid: "31a3b0ab-efda-4a1c-badb-6b29d4ace8f5",
   },
-  {
-    name: {
-      en: "north",
-      ru: "северные",
-    },
-    uuid: "9c99a98d-a908-4146-9eea-11cf2c4cc725",
-  },
+  // {
+  //   name: {
+  //     en: "north",
+  //     ru: "северные",
+  //   },
+  //   uuid: "9c99a98d-a908-4146-9eea-11cf2c4cc725",
+  // },
 ];
