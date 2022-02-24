@@ -56,7 +56,7 @@ export const GATES = [
 ];
 
 export const STREAM_DATA = {
-  ip: "192.168.10.5",
+  ip: "178.159.40.45",
   port: 8085,
   token: "K4Llci2QyzvgIGqVZAgapEOEA3ukZ1",
   groupID: "296kqQ3jTb",
