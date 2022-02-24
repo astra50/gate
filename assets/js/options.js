@@ -1,7 +1,7 @@
 export const GATE_INTERVAL = 30;
 
 export const ENABLE_CLR = `rgb(3, 146, 85)`; // Green
-export const DISABLE_CLR = `rgba(255, 0, 0)`; // Red
+export const DISABLE_CLR = `rgb(186, 0, 0)`; // Red
 
 export const ALERTS = {
   onDisconnect: {
@@ -46,11 +46,19 @@ export const GATES = [
     },
     uuid: "31a3b0ab-efda-4a1c-badb-6b29d4ace8f5",
   },
-  // {
-  //   name: {
-  //     en: "north",
-  //     ru: "северные",
-  //   },
-  //   uuid: "9c99a98d-a908-4146-9eea-11cf2c4cc725",
-  // },
+  {
+    name: {
+      en: "north",
+      ru: "северные",
+    },
+    uuid: "9c99a98d-a908-4146-9eea-11cf2c4cc725",
+  },
 ];
+
+export const STREAM_DATA = {
+  ip: "192.168.10.5",
+  port: 8085,
+  token: "K4Llci2QyzvgIGqVZAgapEOEA3ukZ1",
+  groupID: "296kqQ3jTb",
+  cameraID: "astra_gabage",
+};

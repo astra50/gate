@@ -2,8 +2,8 @@ import React, { useState, useContext, useEffect } from "react";
 import CentrifugeContext from "../context/centrifuge";
 
 function useCentrifuge() {
-  const [isError, setIsError] = useState();
-  const [isConnected, setIsConnected] = useState();
+  const [isError, setIsError] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
   const [remainingTime, setRemainingTime] = useState({});
   const server = useContext(CentrifugeContext);
 
@@ -29,7 +29,7 @@ function useCentrifuge() {
           setRemainingTime({ ...data });
           break;
         default:
-          console.log("Непонятно");
+          setIsError(true);
       }
     };
     setIsConnected(false);
