@@ -1,20 +1,13 @@
 import React, { useRef } from "react";
 import "./video-react.css";
 import { Player, BigPlayButton, ControlBar } from "video-react";
-
-const streamData = {
-  ip: "192.168.10.5",
-  port: 8085,
-  token: "K4Llci2QyzvgIGqVZAgapEOEA3ukZ1",
-  groupID: "296kqQ3jTb",
-  cameraID: "astra_gabage",
-};
+import {STREAM_DATA} from '../../options';
 
 const Streamer = () => {
   const videoRef = useRef();
-
-  const videoUrl = `http://${streamData.ip}:${streamData.port}/${streamData.token}/mp4/${streamData.groupID}/${streamData.cameraID}/s.mp4`;
-  const posterUrl = `http://${streamData.ip}:${streamData.port}/${streamData.token}/jpeg/${streamData.groupID}/${streamData.cameraID}/s.jpg`;
+  const {ip, port, token, groupID, cameraID} = STREAM_DATA
+  const videoUrl = `http://${ip}:${port}/${token}/mp4/${groupID}/${cameraID}/s.mp4`;
+  const posterUrl = `http://${ip}:${port}/${token}/jpeg/${groupID}/${cameraID}/s.jpg`;
 
   return (
     <div className='button-page__stream'>
