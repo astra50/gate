@@ -56,8 +56,8 @@ export const GATES = [
 ];
 
 export const STREAM_DATA = {
-  ip: "178.159.40.45",
-  port: 8085,
+  ip: "reg.kach.su",
+  port: undefined,
   token: "K4Llci2QyzvgIGqVZAgapEOEA3ukZ1",
   groupID: "296kqQ3jTb",
   cameraID: "astra_gabage",
