@@ -6,8 +6,8 @@ import {STREAM_DATA} from '../../options';
 const Streamer = () => {
   const videoRef = useRef();
   const {ip, port, token, groupID, cameraID} = STREAM_DATA
-  const videoUrl = `http://${ip}:${port}/${token}/mp4/${groupID}/${cameraID}/s.mp4`;
-  const posterUrl = `http://${ip}:${port}/${token}/jpeg/${groupID}/${cameraID}/s.jpg`;
+  const videoUrl = `https://${ip}${port ? ':'+port : ''}/${token}/mp4/${groupID}/${cameraID}/s.mp4`;
+  const posterUrl = `https://${ip}${port ? ':'+port : ''}/${token}/jpeg/${groupID}/${cameraID}/s.jpg`;
 
   return (
     <div className='button-page__stream'>
