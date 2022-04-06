@@ -100,8 +100,6 @@ RUN set -ex \
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s \
         CMD REDIRECT_STATUS=true SCRIPT_NAME=/ping SCRIPT_FILENAME=/ping REQUEST_METHOD=GET cgi-fcgi -bind -connect 127.0.0.1:9000
 
-CMD ["sh", "-c", "composer dump-env prod && exec php-fpm"]
-
 #
 # nginx
 #

@@ -90,7 +90,6 @@ steps:
         image: astra50/gate-fpm:base
         commands:
             - composer install --no-interaction --no-progress --classmap-authoritative
-            - composer dump-env test
             - bin/console cache:warmup
         depends_on:
             - build base php-fpm
