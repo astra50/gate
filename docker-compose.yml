@@ -37,8 +37,8 @@ services:
                     size: 2G
             - ./:/usr/local/app
         environment:
-            POSTGRES_DB: db
-            POSTGRES_USER: db
+            POSTGRES_DB: gate
+            POSTGRES_USER: gate
             POSTGRES_PASSWORD: db
         healthcheck:
             test: pg_isready -U db
