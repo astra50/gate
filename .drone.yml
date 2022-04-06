@@ -78,28 +78,6 @@ steps:
             - build base php-fpm
             - build base nginx
 
-    -   name: push base
-        image: docker:20.10.1
-        volumes:
-            -   name: docker.sock
-                path: /var/run/docker.sock
-        commands:
-            - docker login --username "$USERNAME" --password "$PASSWORD"
-            - docker push astra50/gate-node:base
-            - docker push astra50/gate-fpm:base
-            - docker push astra50/gate-nginx:base
-        environment:
-            USERNAME:
-                from_secret: docker_username
-            PASSWORD:
-                from_secret: docker_password
-        when:
-            branch: [ master ]
-        depends_on:
-            - build base node
-            - build base php-fpm
-            - build base node
-
     -   name: npm install
         image: astra50/gate-node:base
         commands:
