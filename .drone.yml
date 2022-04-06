@@ -220,8 +220,8 @@ services:
     -   name: postgres
         image: postgres:12.2
         environment:
-            POSTGRES_DB: db_test
-            POSTGRES_USER: db
+            POSTGRES_DB: gate_test
+            POSTGRES_USER: gate
             POSTGRES_PASSWORD: db
         tmpfs:
             - /var/lib/postgresql/data
