@@ -67,30 +67,8 @@ services:
                 - "traefik.enable=false"
 
     postgres:
-        image: postgres:12.2
-        volumes:
-            -   type: bind
-                source: /opt/astra50/db/gate
-                target: /var/lib/postgresql/data
-            -   type: bind
-                source: /opt/am/db/backups
-                target: /backups
-        environment:
-            POSTGRES_DB: db
-            POSTGRES_USER: db
-            POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-        deploy:
-            mode: global
-            update_config:
-                failure_action: rollback
-                parallelism: 1
-                delay: 5s
-        healthcheck:
-            test: pg_isready -U db
-            interval: 5s
-            timeout: 5s
-            retries: 3
-            start_period: 10s
+        image: ${KUBECTL_IMAGE}
+        command: kubectl -n grachevko port-forward --address 0.0.0.0 pod/grachevko-0 5432:5432
 
     memcached:
         image: memcached:1.6.9-alpine

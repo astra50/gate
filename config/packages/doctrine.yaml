@@ -5,8 +5,8 @@ doctrine:
         server_version: 12.2
         host:     postgres
         port:     5432
-        dbname:   db
-        user:     db
+        dbname:   gate
+        user:     gate
         password: "%env(DATABASE_PASSWORD)%"
     orm:
         auto_generate_proxy_classes: true
