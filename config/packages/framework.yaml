@@ -16,7 +16,7 @@ framework:
     php_errors:
         log: true
 
-    lock: memcached://memcached:11211
+    lock: 'memcached://%env(SESSION_MEMCACHED_HOST)%:%env(SESSION_MEMCACHED_PORT)%'
 
 services:
     session.memcached:
