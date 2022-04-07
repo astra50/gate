@@ -3,10 +3,10 @@ doctrine:
         driver:   pdo_pgsql
         charset:  UTF8
         server_version: 12.2
-        host:     postgres
-        port:     5432
-        dbname:   gate
-        user:     gate
+        host:     '%env(POSTGRES_HOST)%'
+        port:     '%env(int:POSTGRES_PORT)%'
+        dbname:   '%env(POSTGRES_DATABASE)%'
+        user:     '%env(POSTGRES_USER)%'
         password: "%env(DATABASE_PASSWORD)%"
     orm:
         auto_generate_proxy_classes: true
@@ -21,6 +21,10 @@ doctrine:
                 alias: App
 
 parameters:
+    env(POSTGRES_HOST): postgres
+    env(POSTGRES_PORT): '5432'
+    env(POSTGRES_USER): gate
+    env(POSTGRES_DATABASE): gate
     env(DATABASE_PASSWORD): '%env(default:default_db_password:trim:file:DATABASE_PASSWORD_FILE)%'
     env(DATABASE_PASSWORD_FILE): /run/secrets/database_password
     default_db_password: db
