@@ -103,7 +103,9 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=5s \
 #
 # nginx
 #
-FROM nginx:1.17.10-alpine as nginx-base
+FROM nginx:1.21.6-alpine as nginx-base
+
+ENV PHP_FPM_HOST php-fpm
 
 WORKDIR /usr/local/app/public
 
@@ -111,12 +113,16 @@ RUN apk add --no-cache gzip curl
 
 FROM nginx-base AS nginx
 
+ENV NGINX_ENTRYPOINT_QUIET_LOGS 1
+ENV PHP_FPM_HOST 127.0.0.1
+
 COPY --from=php-fpm /usr/local/app/public/favicon.ico favicon.ico
 COPY --from=node /usr/local/app/public/assets assets
 COPY --from=node /usr/local/app/public/img img
 COPY --from=php-fpm /usr/local/app/public/robots.txt .
 
 COPY etc/nginx.conf /etc/nginx/nginx.conf
+COPY etc/nginx.default.conf /etc/nginx/templates/default.conf.template
 
 RUN find . \
     -type f \

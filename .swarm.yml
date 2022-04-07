@@ -45,6 +45,7 @@ services:
             CENTRIFUGO_ADMIN_SECRET: ${CENTRIFUGO_ADMIN_SECRET}
             SENTRY_DSN: ${SENTRY_DSN}
             SITE_SECRET: ${SITE_SECRET}
+            PHP_FPM_HOST: php-fpm
         stop_grace_period: 120s
         deploy:
             mode: replicated
