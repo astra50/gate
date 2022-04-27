@@ -89,7 +89,6 @@ COPY public public
 COPY src src
 COPY templates templates
 COPY translations translations
-COPY .env* .
 COPY --from=node /usr/local/app/public/manifest.json public/manifest.json
 
 RUN set -ex \
