@@ -17,7 +17,7 @@ services:
         image: astra50/gate-fpm:base
         build:
             context: .
-            target: php-fpm-base
+            target: php-base
         volumes:
             - ./:/usr/local/app
             - ./etc/php.ini:/usr/local/etc/php/php.ini

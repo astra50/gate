@@ -25,7 +25,7 @@ RUN NODE_ENV=production webpack
 # PHP-FPM
 #
 FROM composer:2.3.2 as composer
-FROM php:7.4.6-fpm-buster as php-fpm-base
+FROM php:7.4.6-fpm-buster as php-base
 
 LABEL MAINTAINER="Konstantin Grachev <me@grachevko.ru>"
 
@@ -74,7 +74,7 @@ ENV PHP_MEMORY_LIMIT 1G
 ENV PHP_OPCACHE_ENABLE 1
 ENV PHP_ZEND_ASSERTIONS 1
 
-FROM php-fpm-base as php-fpm
+FROM php-base as php
 
 ARG APP_ENV
 ENV APP_ENV prod
@@ -115,10 +115,10 @@ FROM nginx-base AS nginx
 ENV NGINX_ENTRYPOINT_QUIET_LOGS 1
 ENV PHP_FPM_HOST 127.0.0.1
 
-COPY --from=php-fpm /usr/local/app/public/favicon.ico favicon.ico
+COPY --from=php /usr/local/app/public/favicon.ico favicon.ico
 COPY --from=node /usr/local/app/public/assets assets
 COPY --from=node /usr/local/app/public/img img
-COPY --from=php-fpm /usr/local/app/public/robots.txt .
+COPY --from=php /usr/local/app/public/robots.txt .
 
 COPY etc/nginx.conf /etc/nginx/nginx.conf
 COPY etc/nginx.default.conf /etc/nginx/templates/default.conf.template

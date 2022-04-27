@@ -35,13 +35,13 @@ steps:
         environment:
             DOCKER_BUILDKIT: '1'
 
-    -   name: build base php-fpm
+    -   name: build base php
         image: docker:20.10.1
         volumes:
             -   name: docker.sock
                 path: /var/run/docker.sock
         commands:
-            - docker build -t "astra50/gate-fpm:base" --progress=plain --target php-fpm-base .
+            - docker build -t "astra50/gate-fpm:base" --progress=plain --target php-base .
         environment:
             DOCKER_BUILDKIT: '1'
 
@@ -64,7 +64,7 @@ steps:
             - >-
                 docker build -t "astra50/gate-fpm:${DRONE_BUILD_NUMBER}"
                 --progress=plain
-                --target php-fpm
+                --target php
                 .
             - >-
                 docker build -t "astra50/gate-nginx:${DRONE_BUILD_NUMBER}"
@@ -75,7 +75,7 @@ steps:
             DOCKER_BUILDKIT: '1'
         depends_on:
             - build base node
-            - build base php-fpm
+            - build base php
             - build base nginx
 
     -   name: npm install
@@ -95,7 +95,7 @@ steps:
             APP_ENV: test
             APP_DEBUG: 1
         depends_on:
-            - build base php-fpm
+            - build base php
 
     -   name: php-cs-fixer
         image: astra50/gate-fpm:base
