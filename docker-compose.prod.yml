@@ -2,6 +2,7 @@ version: '3.7'
 
 services:
   nginx:
+    restart: always
     build:
       context: .
       target: nginx
@@ -20,6 +21,7 @@ services:
       - traefik
 
   php-fpm: &app
+    restart: always
     build:
       context: .
       target: php
@@ -49,12 +51,14 @@ services:
 
   migration:
     <<: *app
+    restart: on-failure
     labels:
       - "traefik.enable=false"
     command: wait-for-it.sh postgres:5432 -- console doctrine:migrations:migrate --no-interaction --allow-no-migration
 
   postgres:
     image: postgres:14.2-alpine
+    restart: always
     volumes:
       - ../../data/astra50gate/postgres/data:/var/lib/postgresql/data
     environment:
@@ -70,6 +74,7 @@ services:
 
   postgres_backup:
     image: postgres:14.2-alpine
+    restart: always
     entrypoint: /bin/sh
     command:
       - -c
@@ -90,6 +95,7 @@ services:
 
   memcached:
     image: memcached:1.6.9-alpine
+    restart: always
     healthcheck:
       test: nc -z 127.0.0.1 11211
       interval: 5s
@@ -99,6 +105,7 @@ services:
 
   centrifugo:
     image: centrifugo/centrifugo:v2.7.0
+    restart: always
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.astra50-centrifugo.rule=Host(`centrifugo.astra50.ru`)"
